@@ -316,6 +316,7 @@ const groups = [
 const DemoTimeline = () => {
   const startDate = moment('2018-08-01 00:00:00');
   // const endDate = moment('2018-08-01 00:00:30');
+
   const [endDate, setEndDate] = useState(moment('2018-08-01 00:00:30'));
   const [items, setItems] = useState(list);
   const [zoom, setZoom] = useState(1);
