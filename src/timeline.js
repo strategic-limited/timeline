@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { Fragment } from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import {AutoSizer} from 'react-virtualized';
@@ -9,7 +9,7 @@ import moment from 'moment';
 import interact from 'interactjs';
 import _ from 'lodash';
 
-import { minElementDuration } from './consts/timebarConsts';
+import {minElementDuration} from './consts/timebarConsts';
 import {pixToInt, intToPix, sumStyle} from './utils/commonUtils';
 import {
   rowItemsRenderer,
@@ -33,15 +33,7 @@ import 'core-js/fn/string/starts-with';
 
 const scrollHeight = 7;
 
-/**
- * Timeline class
- * @reactProps {!number} items - this is prop1
- * @reactProps {string} prop2 - this is prop2
- */
 export default class Timeline extends React.Component {
-  /**
-   * @type {object}
-   */
   static TIMELINE_MODES = Object.freeze({
     SELECT: 1,
     DRAG: 2,
@@ -49,20 +41,18 @@ export default class Timeline extends React.Component {
   });
 
   static propTypes = {
-    items: PropTypes.arrayOf(PropTypes.shape({
-      key: PropTypes.oneOfType([
-        PropTypes.string, PropTypes.number
-      ]).isRequired,
-      title: PropTypes.string,
-      row: PropTypes.oneOfType([
-        PropTypes.string, PropTypes.number
-      ]),
-      start: PropTypes.object.isRequired,
-      end: PropTypes.object.isRequired,
-      minDuration: PropTypes.number,
-      maxDuration: PropTypes.number,
-      isResizable: PropTypes.bool,
-    })).isRequired,
+    items: PropTypes.arrayOf(
+      PropTypes.shape({
+        key: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        title: PropTypes.string,
+        row: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        start: PropTypes.object.isRequired,
+        end: PropTypes.object.isRequired,
+        minDuration: PropTypes.number,
+        maxDuration: PropTypes.number,
+        isResizable: PropTypes.bool
+      })
+    ).isRequired,
     layersNumber: PropTypes.number.isRequired,
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
     groupOffset: PropTypes.number,
@@ -103,14 +93,16 @@ export default class Timeline extends React.Component {
     bottomResolution: PropTypes.string,
     topResolution: PropTypes.string,
     minItemDuration: PropTypes.number, // in ms
-    updateEndDate: PropTypes.func.isRequired,
+    updateEndDate: PropTypes.func.isRequired
   };
 
   static defaultProps = {
-    items: PropTypes.arrayOf(PropTypes.shape({
-      minDuration: minElementDuration,
-      isResizable: true,
-    })).isRequired,
+    items: PropTypes.arrayOf(
+      PropTypes.shape({
+        minDuration: minElementDuration,
+        isResizable: true
+      })
+    ).isRequired,
     rowLayers: [],
     groupOffset: 0,
     itemHeight: 40,
@@ -126,12 +118,9 @@ export default class Timeline extends React.Component {
     forceRedrawFunc: null,
     onItemHover() {},
     onItemLeave() {},
-    minItemDuration: minElementDuration, // in ms
+    minItemDuration: minElementDuration // in ms
   };
 
-  /**
-   * The types of interactions - see {@link onInteraction}
-   */
   static changeTypes = {
     resizeStart: 'resizeStart',
     resizeEnd: 'resizeEnd',
@@ -141,19 +130,10 @@ export default class Timeline extends React.Component {
     snappedMouseMove: 'snappedMouseMove'
   };
 
-  /**
-   * Checks if the given bit is set in the given mask
-   * @param {number} bit Bit to check
-   * @param {number} mask Mask to check against
-   * @returns {boolean} True if bit is set; else false
-   */
   static isBitSet(bit, mask) {
     return (bit & mask) === bit;
   }
 
-  /**
-   * Alias for no op function
-   */
   static no_op = () => {};
 
   constructor(props) {
@@ -189,9 +169,6 @@ export default class Timeline extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setTimeMap(nextProps.items, nextProps.startDate, nextProps.endDate);
-    // @TODO
-    // investigate if we need this, only added to refresh the grid
-    // when double click -> add an item
     this.refreshGrid();
   }
 
@@ -215,9 +192,6 @@ export default class Timeline extends React.Component {
     }
   }
 
-  /**
-   * Re-renders the grid when the window or container is resized
-   */
   updateDimensions() {
     clearTimeout(this.resizeTimeout);
     this.resizeTimeout = setTimeout(() => {
@@ -226,12 +200,6 @@ export default class Timeline extends React.Component {
     }, 100);
   }
 
-  /**
-   * Sets the internal maps used by the component for looking up item & row data
-   * @param {Object[]} items The items to be displayed in the grid
-   * @param {moment} startDate The visible start date of the timeline
-   * @param {moment} endDate The visible end date of the timeline
-   */
   setTimeMap(items, startDate, endDate) {
     if (!startDate || !endDate) {
       startDate = this.props.startDate;
@@ -256,15 +224,6 @@ export default class Timeline extends React.Component {
     });
   }
 
-  /**
-   * Returns an item given its DOM element
-   * @param {Object} e the DOM element of the item
-   * @return {Object} Item details
-   * @prop {number|string} index The item's index
-   * @prop {number} rowNo The row number the item is in
-   * @prop {number} itemIndex Not really used - gets the index of the item in the row map
-   * @prop {Object} item The provided item object
-   */
   itemFromElement(e) {
     const index = e.getAttribute('data-item-index');
     const rowNo = this.itemRowMap[index];
@@ -274,11 +233,6 @@ export default class Timeline extends React.Component {
     return {index, rowNo, itemIndex, item};
   }
 
-  /**
-   * Gets an item given its ID
-   * @param {number} id item id
-   * @return {Object} Item object
-   */
   getItem(id) {
     // This is quite stupid and shouldn't really be needed
     const rowNo = this.itemRowMap[id];
@@ -286,12 +240,6 @@ export default class Timeline extends React.Component {
     return this.rowItemMap[rowNo][itemIndex];
   }
 
-  /**
-   * Move an item from one row to another
-   * @param {object} item The item object whose groups is to be changed
-   * @param {number} curRow The item's current row index
-   * @param {number} newRow The item's new row index
-   */
   changeGroup(item, curRow, newRow) {
     item.row = newRow;
     this.itemRowMap[item.key] = newRow;
@@ -299,10 +247,6 @@ export default class Timeline extends React.Component {
     this.rowItemMap[newRow].push(item);
   }
 
-  /**
-   * Set the currently selected time ranges (for the timebar to display)
-   * @param {Object[]} selections Of the form `[[start, end], [start, end], ...]`
-   */
   setSelection(selections) {
     let newSelection = _.map(selections, s => {
       return {start: s[0].clone(), end: s[1].clone()};
@@ -310,28 +254,16 @@ export default class Timeline extends React.Component {
     this.setState({selection: newSelection});
   }
 
-  /**
-   * Clears the currently selected time range state
-   */
   clearSelection() {
     this.setState({selection: []});
   }
 
-  /**
-   * Get the width of the timeline NOT including the left group list
-   * @param {?number} totalWidth Total timeline width. If not supplied we use the timeline ref
-   * @returns {number} The width in pixels
-   */
   getTimelineWidth(totalWidth) {
     const {groupOffset} = this.props;
     if (totalWidth !== undefined) return totalWidth - groupOffset;
     return this._grid.props.width - groupOffset;
   }
 
-  /**
-   * re-computes the grid's row sizes
-   * @param {Object?} config Config to pass wo react-virtualized's compute func
-   */
   refreshGrid = (config = {}) => {
     this._grid.recomputeGridSize(config);
   };
@@ -356,7 +288,7 @@ export default class Timeline extends React.Component {
           allowFrom: selectedItemSelector,
           restrict: {
             restriction: `.${topDivClassId}`,
-            elementRect: {left: 1, right: 0, top: 0, bottom: 1},
+            elementRect: {left: 1, right: 0, top: 0, bottom: 1}
           }
         })
         .on('dragstart', e => {
@@ -425,12 +357,6 @@ export default class Timeline extends React.Component {
         .on('dragend', e => {
           const {item, rowNo} = this.itemFromElement(e.target);
           let animatedItems = this._gridDomNode.querySelectorAll("span[isDragging='True'") || [];
-          // let maxRowIndex;
-          // this.props.items.forEach(el => {
-          //   if (!maxRowIndex || el.row > maxRowIndex) {
-          //     maxRowIndex = el.row;
-          //   }
-          // });
 
           let animatedItemsKeys = [];
           _.forEach(animatedItems, domItem => {
@@ -485,8 +411,10 @@ export default class Timeline extends React.Component {
               const elementStartInMs = element.start.clone().diff(0, 'ms');
               const elementEndInMs = element.end.clone().diff(0, 'ms');
 
-              if ((newTargetStartInMs > elementStartInMs && newTargetStartInMs < elementEndInMs)
-                || (newTargetEndInMs > elementStartInMs && newTargetEndInMs < elementEndInMs)) {
+              if (
+                (newTargetStartInMs > elementStartInMs && newTargetStartInMs < elementEndInMs) ||
+                (newTargetEndInMs > elementStartInMs && newTargetEndInMs < elementEndInMs)
+              ) {
                 targetAboveElement = true;
                 break;
               }
@@ -499,7 +427,7 @@ export default class Timeline extends React.Component {
           // ======================================================================================
           let oneOfItemAboveElement = false;
           _.forEach(animatedItems, domItem => {
-            const { item } = this.itemFromElement(domItem);
+            const {item} = this.itemFromElement(domItem);
             let itemDuration = item.end.diff(item.start);
             let newStart = item.start.clone().add(timeDelta, 'ms');
             let newEnd = newStart.clone().add(itemDuration);
@@ -520,7 +448,10 @@ export default class Timeline extends React.Component {
               const elementStartInMs = element.start.clone().diff(0, 'ms');
               const elementEndInMs = element.end.clone().diff(0, 'ms');
 
-              if ((newStartInMs > elementStartInMs && newStartInMs < elementEndInMs) || (newEndInMs > elementStartInMs && newEndInMs < elementEndInMs)) {
+              if (
+                (newStartInMs > elementStartInMs && newStartInMs < elementEndInMs) ||
+                (newEndInMs > elementStartInMs && newEndInMs < elementEndInMs)
+              ) {
                 oneOfItemAboveElement = true;
                 break;
               }
@@ -528,7 +459,6 @@ export default class Timeline extends React.Component {
           });
           // ======================================================================================
           // Checking. Whether one of the dragged array elements is over an element on a new layer.
-
 
           // ======================================================================================
           // ======================================================================================
@@ -577,7 +507,10 @@ export default class Timeline extends React.Component {
                   element.start = this.props.originalStartDate;
                   element.end = this.props.originalStartDate.clone().add(elDuration);
                   items.push(element);
-                } else if (mewRowsWithNewItems[el].items[k-1] && (element.start.diff(0) <= mewRowsWithNewItems[el].items[k-1].end.diff(0))) {
+                } else if (
+                  mewRowsWithNewItems[el].items[k - 1] &&
+                  element.start.diff(0) <= mewRowsWithNewItems[el].items[k - 1].end.diff(0)
+                ) {
                   element.start = mewRowsWithNewItems[el].items[k - 1].end;
                   element.end = mewRowsWithNewItems[el].items[k - 1].end.clone().add(elDuration);
                   items.push(element);
@@ -592,7 +525,6 @@ export default class Timeline extends React.Component {
           // ======================================================================================
           // ======================================================================================
           // ======================================================================================
-
 
           // Default, all items move by the same offset during a drag
 
@@ -677,28 +609,57 @@ export default class Timeline extends React.Component {
             let nearbyElementLeft;
             let nearbyElementRight;
             this.props.items.forEach(el => {
-              if (el.key !== itemData.key && el.row === itemData.row
-                && (el.end.diff(0, 'ms') < itemData.start.diff(0, 'ms'))
-                && (!nearbyElementLeft || el.end.diff(0, 'ms') > nearbyElementLeft.end.diff(0, 'ms'))) {
+              if (
+                el.key !== itemData.key &&
+                el.row === itemData.row &&
+                el.end.diff(0, 'ms') < itemData.start.diff(0, 'ms') &&
+                (!nearbyElementLeft || el.end.diff(0, 'ms') > nearbyElementLeft.end.diff(0, 'ms'))
+              ) {
                 nearbyElementLeft = el;
               }
-              if (el.key !== itemData.key
-                && (el.start.diff(0, 'ms') > itemData.end.diff(0, 'ms'))
-                && (!nearbyElementRight || el.end.diff(0, 'ms') < nearbyElementRight.end.diff(0, 'ms'))) {
+              if (
+                el.key !== itemData.key &&
+                el.start.diff(0, 'ms') > itemData.end.diff(0, 'ms') &&
+                (!nearbyElementRight || el.end.diff(0, 'ms') < nearbyElementRight.end.diff(0, 'ms'))
+              ) {
                 nearbyElementRight = el;
               }
             });
 
             // free space from the element to the start of the timeline + element duration in px
-            let spaceLeftInPx = getPixelAtTime(itemData.end, this.props.startDate, this.props.endDate, this.getTimelineWidth());
-            let spaceRightInPx = getPixelAtTime(itemData.start, this.props.endDate, this.props.startDate, this.getTimelineWidth());
+            let spaceLeftInPx = getPixelAtTime(
+              itemData.end,
+              this.props.startDate,
+              this.props.endDate,
+              this.getTimelineWidth()
+            );
+            let spaceRightInPx = getPixelAtTime(
+              itemData.start,
+              this.props.endDate,
+              this.props.startDate,
+              this.getTimelineWidth()
+            );
             if (nearbyElementLeft && e.deltaRect.left <= 0 && e.deltaRect.right === 0) {
-              spaceLeftInPx = spaceLeftInPx - getPixelAtTime(nearbyElementLeft.end, this.props.startDate, this.props.endDate, this.getTimelineWidth());
+              spaceLeftInPx =
+                spaceLeftInPx -
+                getPixelAtTime(
+                  nearbyElementLeft.end,
+                  this.props.startDate,
+                  this.props.endDate,
+                  this.getTimelineWidth()
+                );
               // spaceLeftInPx = spaceLeftInPx - getPixelAtTime(nearbyElementLeft.end, this.props.startDate, this.props.endDate, this.getTimelineWidth()) + 10;
               // itemWidth = itemWidth + 10;
             }
             if (nearbyElementRight && e.deltaRect.right >= 0 && e.deltaRect.left === 0) {
-              spaceRightInPx = spaceRightInPx - getPixelAtTime(nearbyElementRight.start, this.props.endDate, this.props.startDate, this.getTimelineWidth());
+              spaceRightInPx =
+                spaceRightInPx -
+                getPixelAtTime(
+                  nearbyElementRight.start,
+                  this.props.endDate,
+                  this.props.startDate,
+                  this.getTimelineWidth()
+                );
               // spaceRightInPx = spaceRightInPx - getPixelAtTime(nearbyElementRight.start, this.props.endDate, this.props.startDate, this.getTimelineWidth()) + 10;
               // itemWidth = itemWidth + 10;
             }
@@ -757,9 +718,11 @@ export default class Timeline extends React.Component {
               );
               if (durationChange === null) durationChange = item.start.diff(newStart, 'ms');
               itemsOnNewRow.forEach(el => {
-                if (el.key !== item.key
-                  && (el.end.diff(0, 'ms') <= item.start.diff(0, 'ms'))
-                  && (!nearbyElement || el.end.diff(0, 'ms') > nearbyElement.end.diff(0, 'ms'))) {
+                if (
+                  el.key !== item.key &&
+                  el.end.diff(0, 'ms') <= item.start.diff(0, 'ms') &&
+                  (!nearbyElement || el.end.diff(0, 'ms') > nearbyElement.end.diff(0, 'ms'))
+                ) {
                   nearbyElement = el;
                 }
               });
@@ -775,17 +738,33 @@ export default class Timeline extends React.Component {
               }
 
               // check item minimum size
-              if (item.end.diff(newStart, 'ms') < minimumDuration && this.props.startDate.diff(0, 'ms') < newStart.diff(0, 'ms')) {
+              if (
+                item.end.diff(newStart, 'ms') < minimumDuration &&
+                this.props.startDate.diff(0, 'ms') < newStart.diff(0, 'ms')
+              ) {
                 newStart = moment(item.end.diff(0, 'ms') - minimumDuration);
               }
 
               // check item maximum size
-              if (item.end.diff(newStart, 'ms') > maximumDuration && this.props.startDate.diff(0, 'ms') < newStart.diff(0, 'ms')) {
+              if (
+                item.end.diff(newStart, 'ms') > maximumDuration &&
+                this.props.startDate.diff(0, 'ms') < newStart.diff(0, 'ms')
+              ) {
                 newStart = moment(item.end.diff(0, 'ms') - maximumDuration);
               }
 
-              const widthInPxToEnd = getPixelAtTime(item.end, this.props.startDate, this.props.endDate, this.getTimelineWidth());
-              const widthInPxToStart = getPixelAtTime(newStart, this.props.startDate, this.props.endDate, this.getTimelineWidth());
+              const widthInPxToEnd = getPixelAtTime(
+                item.end,
+                this.props.startDate,
+                this.props.endDate,
+                this.getTimelineWidth()
+              );
+              const widthInPxToStart = getPixelAtTime(
+                newStart,
+                this.props.startDate,
+                this.props.endDate,
+                this.getTimelineWidth()
+              );
               const itemWidthInPx = widthInPxToEnd - widthInPxToStart;
 
               item.start = newStart;
@@ -802,9 +781,11 @@ export default class Timeline extends React.Component {
               if (durationChange === null) durationChange = item.end.diff(newEnd, 'ms');
 
               itemsOnNewRow.forEach(el => {
-                if (el.key !== item.key
-                  && (el.start.diff(0, 'ms') >= item.end.diff(0, 'ms'))
-                  && (!nearbyElement || el.end.diff(0, 'ms') < nearbyElement.end.diff(0, 'ms'))) {
+                if (
+                  el.key !== item.key &&
+                  el.start.diff(0, 'ms') >= item.end.diff(0, 'ms') &&
+                  (!nearbyElement || el.end.diff(0, 'ms') < nearbyElement.end.diff(0, 'ms'))
+                ) {
                   nearbyElement = el;
                 }
               });
@@ -820,17 +801,33 @@ export default class Timeline extends React.Component {
               }
 
               // check item minimum size
-              if (newEnd.diff(item.start, 'ms') < minimumDuration && this.props.endDate.diff(0, 'ms') > newEnd.diff(0, 'ms')) {
+              if (
+                newEnd.diff(item.start, 'ms') < minimumDuration &&
+                this.props.endDate.diff(0, 'ms') > newEnd.diff(0, 'ms')
+              ) {
                 newEnd = moment(item.start.diff(0, 'ms') + minimumDuration);
               }
 
               // check item maximum size
-              if (newEnd.diff(item.start, 'ms') > maximumDuration && this.props.endDate.diff(0, 'ms') > newEnd.diff(0, 'ms')) {
+              if (
+                newEnd.diff(item.start, 'ms') > maximumDuration &&
+                this.props.endDate.diff(0, 'ms') > newEnd.diff(0, 'ms')
+              ) {
                 newEnd = moment(item.start.diff(0, 'ms') + maximumDuration);
               }
 
-              const widthInPxToEnd = getPixelAtTime(newEnd, this.props.startDate, this.props.endDate, this.getTimelineWidth());
-              const widthInPxToStart = getPixelAtTime(item.start, this.props.startDate, this.props.endDate, this.getTimelineWidth());
+              const widthInPxToEnd = getPixelAtTime(
+                newEnd,
+                this.props.startDate,
+                this.props.endDate,
+                this.getTimelineWidth()
+              );
+              const widthInPxToStart = getPixelAtTime(
+                item.start,
+                this.props.startDate,
+                this.props.endDate,
+                this.getTimelineWidth()
+              );
               const itemWidthInPx = widthInPxToEnd - widthInPxToStart;
 
               item.end = newEnd;
@@ -986,17 +983,7 @@ export default class Timeline extends React.Component {
     }
   };
 
-  /**
-   * @param {number} width container width (in px)
-   */
   cellRenderer(width) {
-    /**
-     * @param  {} columnIndex Always 1
-     * @param  {} key Unique key within array of cells
-     * @param  {} parent Reference to the parent Grid (instance)
-     * @param  {} rowIndex Vertical (row) index of cell
-     * @param  {} style Style object to be applied to cell (to position it);
-     */
     const {timelineMode, onItemHover, onItemLeave, rowLayers} = this.props;
     const canSelect = Timeline.isBitSet(Timeline.TIMELINE_MODES.SELECT, timelineMode);
     return ({columnIndex, key, parent, rowIndex, style}) => {
@@ -1045,36 +1032,21 @@ export default class Timeline extends React.Component {
     };
   }
 
-  /**
-   * Helper for react virtuaized to get the row height given a row index
-   */
   rowHeight({index}) {
     // let rh = this.rowHeightCache[index] ? this.rowHeightCache[index] : 1;
     const rh = 1;
     return rh * this.props.itemHeight;
   }
 
-  /**
-   * Set the grid ref.
-   * @param {Object} reactComponent Grid react element
-   */
   grid_ref_callback(reactComponent) {
     this._grid = reactComponent;
     this._gridDomNode = ReactDOM.findDOMNode(this._grid);
   }
 
-  /**
-   * Set the select box ref.
-   * @param {Object} reactComponent Selectbox react element
-   */
   select_ref_callback(reactComponent) {
     this._selectBox = reactComponent;
   }
 
-  /**
-   * Event handler for onMouseMove.
-   * Only calls back if a new snap time is reached
-   */
   throttledMouseMoveFunc(e) {
     const {componentId} = this.props;
     const leftOffset = document.querySelector(`.rct9k-id-${componentId} .parent-div`).getBoundingClientRect().left;
@@ -1110,7 +1082,7 @@ export default class Timeline extends React.Component {
       shallowUpdateCheck,
       forceRedrawFunc,
       bottomResolution,
-      topResolution,
+      topResolution
     } = this.props;
 
     const divCssClass = `rct9k-timeline-div rct9k-id-${componentId}`;
