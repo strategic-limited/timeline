@@ -8,8 +8,8 @@ module.exports = merge(common, {
   mode: 'development',
   devtool: 'inline-source-map',
   plugins: [
-     new HtmlWebpackPlugin({
-      title: 'React Timeline 9000',
+    new HtmlWebpackPlugin({
+      title: 'Timeline',
       template: 'src/demo.html',
       chunksSortMode: 'dependency',
       inject: 'body',

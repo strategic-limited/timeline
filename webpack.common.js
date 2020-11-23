@@ -11,10 +11,10 @@ module.exports = {
     rules: [
       { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
       {test: /\.css$/,
-      use: [
-        { loader: "style-loader" },
-        { loader: "css-loader" }
-      ]}
+        use: [
+          { loader: "style-loader" },
+          { loader: "css-loader" }
+        ]}
     ]
   },
   resolve: {
@@ -22,7 +22,7 @@ module.exports = {
       path.resolve(__dirname, './node_modules'),
       path.resolve(__dirname, './src')
     ],
-},
+  },
   stats: {
     colors: true
   }

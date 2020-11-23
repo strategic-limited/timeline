@@ -10,7 +10,7 @@ module.exports = merge(common, {
   devtool: 'source-map',
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'React Timeline 9000',
+      title: 'Timeline',
       template: 'src/demo.html',
       chunksSortMode: 'dependency',
       inject: 'body',
