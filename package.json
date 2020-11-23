@@ -29,9 +29,9 @@
   "license": "MIT",
   "files": [
     "dist",
-    "lib"
+    "src"
   ],
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "devDependencies": {
     "antd": "^3.6.5",
     "babel-cli": "^6.26.0",
