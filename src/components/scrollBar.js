@@ -37,7 +37,7 @@ export default class Timeline extends React.Component {
     setEndDateWithZoom: PropTypes.func.isRequired,
     items: PropTypes.arrayOf(PropTypes.object).isRequired,
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
-    groupOffset: PropTypes.number.isRequired,
+    groupOffset: PropTypes.number,
     rowLayers: PropTypes.arrayOf(
       PropTypes.shape({
         start: PropTypes.object.isRequired,
@@ -79,7 +79,7 @@ export default class Timeline extends React.Component {
 
   static defaultProps = {
     rowLayers: [],
-    groupOffset: 150,
+    groupOffset: 0,
     itemHeight: 10,
     snapMinutes: 0.01,
     cursorTimeFormat: 'mm:ss:ms',

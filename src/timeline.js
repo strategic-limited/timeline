@@ -60,10 +60,12 @@ export default class Timeline extends React.Component {
       start: PropTypes.object.isRequired,
       end: PropTypes.object.isRequired,
       minDuration: PropTypes.number,
+      maxDuration: PropTypes.number,
       isResizable: PropTypes.bool,
     })).isRequired,
+    layersNumber: PropTypes.number.isRequired,
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
-    groupOffset: PropTypes.number.isRequired,
+    groupOffset: PropTypes.number,
     rowLayers: PropTypes.arrayOf(
       PropTypes.shape({
         start: PropTypes.object.isRequired,
@@ -110,7 +112,7 @@ export default class Timeline extends React.Component {
       isResizable: true,
     })).isRequired,
     rowLayers: [],
-    groupOffset: 150,
+    groupOffset: 0,
     itemHeight: 40,
     snapMinutes: 0.01,
     cursorTimeFormat: 'mm:ss:ms',
@@ -528,197 +530,71 @@ export default class Timeline extends React.Component {
           // Checking. Whether one of the dragged array elements is over an element on a new layer.
 
 
-          // Default, all items move by the same offset during a drag
+          // ======================================================================================
+          // ======================================================================================
+          // ======================================================================================
+          const mewRowsWithNewItems = {};
+
           _.forEach(animatedItems, domItem => {
-            const {item, rowNo} = this.itemFromElement(domItem);
-            // const newItemRow = rowNo + rowChangeDelta;
-
-            // if (newItemRow > maxRowIndex && +rowNo !== maxRowIndex) {
-            //   console.log("Back", item.title);
-            //   return;
-            // }
-
-            let itemDuration = item.end.diff(item.start);
+            const {item} = this.itemFromElement(domItem);
+            let timelineStartInMs = item.end.diff(item.start);
             let newStart = item.start.clone().add(timeDelta, 'ms');
-            let newEnd = newStart.clone().add(itemDuration);
+            let newEnd = newStart.clone().add(timelineStartInMs);
+            let newRow = item.row + rowChangeDelta >= 0 ? item.row + rowChangeDelta : 0;
+            if (newRow > this.props.layersNumber) {
+              newRow = this.props.layersNumber;
+            }
 
-            const newStartInMs = newStart.clone().diff(0, 'ms');
-            const newEndInMs = newEnd.clone().diff(0, 'ms');
-            const itemDurationInMs = newEnd.clone().diff(newStart, 'ms');
-            const timelineEndInMs = this.props.originalEndDate.diff(0, 'ms');
-            const timelineStartInMs = this.props.originalStartDate.diff(0, 'ms');
-            const currentItemNewRow = item.row + rowChangeDelta;
-
-            const itemsOnNewRow = this.props.items.filter(element => element.row === currentItemNewRow);
+            const itemsOnNewRow = this.props.items.filter(element => {
+              if (element.row === newRow && !animatedItemsKeys.some(key => key === element.key)) {
+                return element;
+              }
+            });
             itemsOnNewRow.sort((a, b) => {
               return a - b;
             });
 
-            let itemAboveElement = false;
-
-            // Checking whether the dragged item is above other items.
-            for (let i = 0; i < itemsOnNewRow.length; i++) {
-              const element = itemsOnNewRow[i];
-              if (animatedItemsKeys.some(key => key === element.key)) {
-                continue;
-              }
-              const elementStartInMs = element.start.clone().diff(0, 'ms');
-              const elementEndInMs = element.end.clone().diff(0, 'ms');
-
-              if ((newStartInMs > elementStartInMs && newStartInMs < elementEndInMs) || (newEndInMs > elementStartInMs && newEndInMs < elementEndInMs)) {
-                itemAboveElement = true;
-                break;
-              }
+            if (!mewRowsWithNewItems[newRow]) {
+              mewRowsWithNewItems[newRow] = {items: [...itemsOnNewRow]};
             }
-
-            let wasInLoop = false;
-
-            // ===== check start and end =====
-            for (let i = 0; i < itemsOnNewRow.length; i++) {
-              const element = itemsOnNewRow[i];
-              if (animatedItemsKeys.some(key => key === element.key)) {
-                continue;
-              }
-              wasInLoop = true;
-              const elementStartInMs = element.start.clone().diff(0, 'ms');
-              const elementEndInMs = element.end.clone().diff(0, 'ms');
-              let nearbyElement;
-              let timeDifference;
-
-              // moving on the same layer
-              if (+rowNo === currentItemNewRow && newStartInMs < elementEndInMs && newStartInMs > elementStartInMs) {
-                console.log(1);
-                // push after element
-                nearbyElement = itemsOnNewRow.find(el => el.start.diff(0, 'ms') > element.end.diff(0, 'ms') && el.key !== item.key);
-                let lastElementOnLayer = null;
-                itemsOnNewRow.forEach(el => {
-                  if (el.end.diff(0, 'ms') > item.end.diff(0, 'ms') && el.key !== item.key) {
-                    lastElementOnLayer = el;
-                  }
-                });
-
-                if (nearbyElement) {
-                  timeDifference = nearbyElement.start.diff(element.end, 'ms');
-                } else if (lastElementOnLayer && !nearbyElement) {
-                  timeDifference = this.props.endDate.diff(lastElementOnLayer.end, 'ms');
-                } else {
-                  timeDifference = this.props.endDate.diff(element.end, 'ms');
-                }
-
-                if (timeDifference > itemDurationInMs) {
-                  item.start = moment(elementEndInMs + 10);
-                  item.end = moment(elementEndInMs + itemDurationInMs + 10);
-                }
-                break;
-              } else if (+rowNo === currentItemNewRow && newEndInMs < elementEndInMs && newEndInMs > elementStartInMs) {
-                console.log(2);
-                // pus before element
-                nearbyElement = itemsOnNewRow.find(el => el.end.diff(0, 'ms') < element.start.diff(0, 'ms') && el.key !== item.key);
-                if (nearbyElement) {
-                  timeDifference = element.start.diff(nearbyElement.end, 'ms');
-                } else {
-                  timeDifference = element.start.diff(this.props.startDate, 'ms');
-                }
-
-                if (timeDifference > itemDurationInMs) {
-                  item.start = moment(elementStartInMs - itemDurationInMs - 10);
-                  item.end = moment(elementStartInMs - 10);
-                }
-                break;
-              } else if (+rowNo === currentItemNewRow && !itemAboveElement) {
-                console.log(3);
-                item.start = newStart;
-                item.end = newEnd;
-                break;
-              }
-
-              // moving to another layer
-              if ((newEndInMs < elementStartInMs || newStartInMs > elementEndInMs) && +rowNo !== currentItemNewRow && !itemAboveElement && !targetAboveElement && !oneOfItemAboveElement) {
-                console.log(4);
-                item.start = newStart;
-                item.end = newEnd;
-                if (rowChangeDelta < 0) {
-                  item.row = Math.max(0, currentItemNewRow);
-                } else if (rowChangeDelta > 0) {
-                  item.row = Math.min(this.props.groups.length - 1, currentItemNewRow);
-                }
-                break;
-              }
-            }
-
-            // If we move along the previous layer and there is only one element on this layer || if the new layer is empty.
-            if (!wasInLoop && !targetAboveElement) {
-              console.log(5);
+            if (newEnd.diff(0) !== item.end.diff(0)) {
               item.start = newStart;
               item.end = newEnd;
-              if (rowChangeDelta < 0) {
-                item.row = Math.max(0, item.row + rowChangeDelta);
-              } else if (rowChangeDelta > 0) {
-                item.row = Math.min(this.props.groups.length - 1, item.row + rowChangeDelta);
-              }
+              item.row = newRow;
+              mewRowsWithNewItems[newRow].items.push(item);
             }
-
-
-            // ===== check start and end =====
-
-            // ===== if in element end > timeline end || start < timeline start =====
-            const minimumDuration = item.minDuration || this.props.minItemDuration;
-
-            if (timelineEndInMs - itemDurationInMs < newStartInMs) {
-              let lastElementOnLayer = null;
-              itemsOnNewRow.forEach(el => {
-                if (el.end.diff(0, 'ms') > item.end.diff(0, 'ms') && el.key !== item.key) {
-                  lastElementOnLayer = el;
-                }
-              });
-              if (!lastElementOnLayer || (lastElementOnLayer && this.props.originalEndDate.diff(lastElementOnLayer.end) > itemDurationInMs)) {
-                item.start = moment(timelineEndInMs - itemDurationInMs);
-                item.end = this.props.endDate;
-              } else if (lastElementOnLayer && this.props.originalEndDate.diff(lastElementOnLayer.end) > minimumDuration + 10) {
-                item.start = moment(lastElementOnLayer.end.diff(0) + 10);
-                item.end = this.props.originalEndDate;
-              }
-            } else if (newStartInMs < timelineStartInMs) {
-              let firstElementOnLayer = null;
-              itemsOnNewRow.forEach(el => {
-                if (el.start.diff(0, 'ms') < item.start.diff(0, 'ms') && el.key !== item.key) {
-                  firstElementOnLayer = el;
-                }
-              });
-              if (!firstElementOnLayer || (firstElementOnLayer && firstElementOnLayer.start.diff(this.props.originalStartDate) > itemDurationInMs)) {
-                item.start = this.props.startDate;
-                item.end = moment(timelineStartInMs + itemDurationInMs);
-              } else if (firstElementOnLayer && firstElementOnLayer.start.diff(this.props.originalStartDate) > minimumDuration + 10) {
-                item.start = this.props.startDate;
-                item.end = moment(firstElementOnLayer.start.diff(0) - 10);
-              }
-            }
-            // ===== end  if in element end > timeline end || start < timeline start =====
-
-            items.push(item);
-            items.map((el, i) => {
-              const elStartInMs = el.start.diff(0, 'ms');
-              const elEndInMs = el.end.diff(0, 'ms');
-              // If the items being dragged are on the same layer and move to the left.
-              if (timeDelta < 0 && items[i + 1] && items[i + 1].row === el.row) {
-                const nextElStartInMs = items[i + 1].start.diff(0, 'ms');
-                const nextElDuration = items[i + 1].end.diff(items[i + 1].start, 'ms');
-                if (nextElStartInMs < elEndInMs) {
-                  items[i + 1].start = moment(elEndInMs + 10);
-                  items[i + 1].end = moment(elEndInMs + 10 + nextElDuration);
-                }
-              }
-              // If the items being dragged are on the same layer and move to the right.
-              if (timeDelta > 0 && items[i - 1] && items[i - 1].row === el.row) {
-                const prevElEndInMs = items[i - 1].end.diff(0, 'ms');
-                const prevElDuration = items[i - 1].end.diff(items[i - 1].start, 'ms');
-                if (elStartInMs < prevElEndInMs) {
-                  items[i - 1].start = moment(elStartInMs - 10 - prevElDuration);
-                  items[i - 1].end = moment(elStartInMs - 10);
-                }
-              }
-            });
           });
+
+          if (mewRowsWithNewItems) {
+            Object.keys(mewRowsWithNewItems).forEach(el => {
+              mewRowsWithNewItems[el].items.sort((a, b) => a.start.diff(0) - b.start.diff(0));
+            });
+
+            Object.keys(mewRowsWithNewItems).forEach((el, i) => {
+              mewRowsWithNewItems[el].items.forEach((element, k) => {
+                const elDuration = element.end.diff(element.start);
+                if (k === 0 && this.props.originalStartDate.diff(0) > element.start.diff(0)) {
+                  element.start = this.props.originalStartDate;
+                  element.end = this.props.originalStartDate.clone().add(elDuration);
+                  items.push(element);
+                } else if (mewRowsWithNewItems[el].items[k-1] && (element.start.diff(0) <= mewRowsWithNewItems[el].items[k-1].end.diff(0))) {
+                  element.start = mewRowsWithNewItems[el].items[k - 1].end;
+                  element.end = mewRowsWithNewItems[el].items[k - 1].end.clone().add(elDuration);
+                  items.push(element);
+                }
+                if (element.end.diff(0) > this.props.originalEndDate) {
+                  this.props.updateEndDate(element.end);
+                }
+              });
+            });
+          }
+
+          // ======================================================================================
+          // ======================================================================================
+          // ======================================================================================
+
+
+          // Default, all items move by the same offset during a drag
 
           this.props.onInteraction(Timeline.changeTypes.dragEnd, changes, items);
 
@@ -788,7 +664,16 @@ export default class Timeline extends React.Component {
             }
             let itemWidth = item.offsetWidth;
             const minimumDuration = itemData.minDuration || this.props.minItemDuration;
-            const minimumWidth = pixelsPerMinute(this.props.startDate, this.props.endDate, this.getTimelineWidth()) * minimumDuration;
+            const maximumDuration = itemData.maxDuration;
+
+            const minimumWidth =
+              pixelsPerMinute(this.props.startDate, this.props.endDate, this.getTimelineWidth()) * minimumDuration;
+            let maximumWidth;
+            if (maximumDuration) {
+              maximumWidth =
+                pixelsPerMinute(this.props.startDate, this.props.endDate, this.getTimelineWidth()) * maximumDuration;
+            }
+
             let nearbyElementLeft;
             let nearbyElementRight;
             this.props.items.forEach(el => {
@@ -808,27 +693,30 @@ export default class Timeline extends React.Component {
             let spaceLeftInPx = getPixelAtTime(itemData.end, this.props.startDate, this.props.endDate, this.getTimelineWidth());
             let spaceRightInPx = getPixelAtTime(itemData.start, this.props.endDate, this.props.startDate, this.getTimelineWidth());
             if (nearbyElementLeft && e.deltaRect.left <= 0 && e.deltaRect.right === 0) {
-              spaceLeftInPx = spaceLeftInPx - getPixelAtTime(nearbyElementLeft.end, this.props.startDate, this.props.endDate, this.getTimelineWidth()) + 10;
-              itemWidth = itemWidth + 10;
+              spaceLeftInPx = spaceLeftInPx - getPixelAtTime(nearbyElementLeft.end, this.props.startDate, this.props.endDate, this.getTimelineWidth());
+              // spaceLeftInPx = spaceLeftInPx - getPixelAtTime(nearbyElementLeft.end, this.props.startDate, this.props.endDate, this.getTimelineWidth()) + 10;
+              // itemWidth = itemWidth + 10;
             }
             if (nearbyElementRight && e.deltaRect.right >= 0 && e.deltaRect.left === 0) {
-              spaceRightInPx = spaceRightInPx - getPixelAtTime(nearbyElementRight.start, this.props.endDate, this.props.startDate, this.getTimelineWidth()) + 10;
-              itemWidth = itemWidth + 10;
+              spaceRightInPx = spaceRightInPx - getPixelAtTime(nearbyElementRight.start, this.props.endDate, this.props.startDate, this.getTimelineWidth());
+              // spaceRightInPx = spaceRightInPx - getPixelAtTime(nearbyElementRight.start, this.props.endDate, this.props.startDate, this.getTimelineWidth()) + 10;
+              // itemWidth = itemWidth + 10;
             }
 
             // resize left
-            if (spaceLeftInPx - itemWidth <= 0 && e.deltaRect.left <= 0 && e.deltaRect.right === 0) {
-              return;
-            }
+            // if (spaceLeftInPx - itemWidth <= 0 && e.deltaRect.left <= 0 && e.deltaRect.right === 0) {
+            //   return;
+            // }
             // resize right
-            if (spaceRightInPx - itemWidth <= 0 && e.deltaRect.right >= 0 && e.deltaRect.left === 0) {
-              return;
-            }
-
+            // if (spaceRightInPx - itemWidth <= 0 && e.deltaRect.right >= 0 && e.deltaRect.left === 0) {
+            //   return;
+            // }
+            // check min and max
             let newWidth = intToPix(Number(item.getAttribute('initialWidth')) + snappedDw);
-            if (+(newWidth.replace('px', '')) < minimumWidth) {
-              return;
-            }
+            // if (+(newWidth.replace('px', '')) < minimumWidth
+            //   || +(newWidth.replace('px', '')) > maximumWidth) {
+            //   return;
+            // }
             item.style.width = newWidth;
             item.style.webkitTransform = item.style.transform = 'translate(' + snappedDx + 'px, 0px)';
             e.target.setAttribute('delta-x', dx);
@@ -849,6 +737,7 @@ export default class Timeline extends React.Component {
             let startPixelOffset = pixToInt(domItem.style.left) + dx;
             const {item, rowNo} = this.itemFromElement(domItem);
             const minimumDuration = item.minDuration || this.props.minItemDuration;
+            const maximumDuration = item.maxDuration;
 
             minRowNo = Math.min(minRowNo, rowNo);
 
@@ -869,7 +758,7 @@ export default class Timeline extends React.Component {
               if (durationChange === null) durationChange = item.start.diff(newStart, 'ms');
               itemsOnNewRow.forEach(el => {
                 if (el.key !== item.key
-                  && (el.end.diff(0, 'ms') < item.start.diff(0, 'ms'))
+                  && (el.end.diff(0, 'ms') <= item.start.diff(0, 'ms'))
                   && (!nearbyElement || el.end.diff(0, 'ms') > nearbyElement.end.diff(0, 'ms'))) {
                   nearbyElement = el;
                 }
@@ -890,7 +779,17 @@ export default class Timeline extends React.Component {
                 newStart = moment(item.end.diff(0, 'ms') - minimumDuration);
               }
 
+              // check item maximum size
+              if (item.end.diff(newStart, 'ms') > maximumDuration && this.props.startDate.diff(0, 'ms') < newStart.diff(0, 'ms')) {
+                newStart = moment(item.end.diff(0, 'ms') - maximumDuration);
+              }
+
+              const widthInPxToEnd = getPixelAtTime(item.end, this.props.startDate, this.props.endDate, this.getTimelineWidth());
+              const widthInPxToStart = getPixelAtTime(newStart, this.props.startDate, this.props.endDate, this.getTimelineWidth());
+              const itemWidthInPx = widthInPxToEnd - widthInPxToStart;
+
               item.start = newStart;
+              domItem.style.width = `${itemWidthInPx}px`;
             } else {
               let endPixelOffset = startPixelOffset + pixToInt(domItem.style.width);
               let newEnd = getTimeAtPixel(
@@ -904,7 +803,7 @@ export default class Timeline extends React.Component {
 
               itemsOnNewRow.forEach(el => {
                 if (el.key !== item.key
-                  && (el.start.diff(0, 'ms') > item.end.diff(0, 'ms'))
+                  && (el.start.diff(0, 'ms') >= item.end.diff(0, 'ms'))
                   && (!nearbyElement || el.end.diff(0, 'ms') < nearbyElement.end.diff(0, 'ms'))) {
                   nearbyElement = el;
                 }
@@ -925,7 +824,17 @@ export default class Timeline extends React.Component {
                 newEnd = moment(item.start.diff(0, 'ms') + minimumDuration);
               }
 
+              // check item maximum size
+              if (newEnd.diff(item.start, 'ms') > maximumDuration && this.props.endDate.diff(0, 'ms') > newEnd.diff(0, 'ms')) {
+                newEnd = moment(item.start.diff(0, 'ms') + maximumDuration);
+              }
+
+              const widthInPxToEnd = getPixelAtTime(newEnd, this.props.startDate, this.props.endDate, this.getTimelineWidth());
+              const widthInPxToStart = getPixelAtTime(item.start, this.props.startDate, this.props.endDate, this.getTimelineWidth());
+              const itemWidthInPx = widthInPxToEnd - widthInPxToStart;
+
               item.end = newEnd;
+              domItem.style.width = `${itemWidthInPx}px`;
             }
 
             // Check row height doesn't need changing
@@ -973,7 +882,7 @@ export default class Timeline extends React.Component {
         })
         .on('dragmove', e => {
           const magicalConstant = 2;
-          // @bendog: I added this magical constant to solve the issue of selection bleed,
+          // I added this magical constant to solve the issue of selection bleed,
           // I don't understand why it works, but if frequentist statisticians can use imaginary numbers, so can i.
           const {startX, startY} = this._selectBox;
           const startRowObject = getNearestRowObject(startX, startY);

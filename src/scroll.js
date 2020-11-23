@@ -12,7 +12,7 @@ import './style.css';
 
 const groups = [{id: 0}];
 
-const Scroll = ({ startDate, endDate, scrollBarStart, scrollBarEnd, setStartDateWithZoom, setEndDateWithZoom, zoom }) => {
+const Scroll = ({ startDate, endDate, scrollBarStart, scrollBarEnd, setStartDateWithZoom, setEndDateWithZoom }) => {
   const [isStartDrag, setIsStartDrag] = useState(false);
   const [items, setItems] = useState([
     {
@@ -88,7 +88,6 @@ const Scroll = ({ startDate, endDate, scrollBarStart, scrollBarEnd, setStartDate
       originalEndDate={endDate}
       selectedItems={selectedItems}
       showCursorTime
-      groupOffset={0} // important
       onInteraction={handleInteraction}
       componentId="timeline-scroll"
       setStartDateWithZoom={setStartDateWithZoom}

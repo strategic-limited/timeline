@@ -10,9 +10,8 @@
 }
 
 .rct9k-timeline-scroll {
-  height: 20px;
+  height: 10px;
   margin-top: 20px;
-  margin-bottom: -10px;
 }
 
 /* Timeline items */
@@ -37,7 +36,7 @@
   display: inline-block;
   width: 100%;
   height: 100%;
-  border: 0.5px solid #EB5054;
+  border: 0.5px solid #575773;
   border-radius: 5px;
 }
 
@@ -68,7 +67,7 @@
 }
 
 .rct9k-items-selected {
-  border: 2.5px solid #EB5054;
+  border-color: #EB5054;
   background-color: rgb(54, 54, 81);
 }
 
