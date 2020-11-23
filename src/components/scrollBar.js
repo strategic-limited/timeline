@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { Fragment } from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import {AutoSizer} from 'react-virtualized';
@@ -10,12 +10,7 @@ import interact from 'interactjs';
 import _ from 'lodash';
 
 import {pixToInt, intToPix, sumStyle} from '../utils/commonUtils';
-import {
-  rowItemsRenderer,
-  rowLayerRenderer,
-  getNearestRowNumber,
-  getMaxOverlappingItems,
-} from '../utils/itemUtils';
+import {rowItemsRenderer, rowLayerRenderer, getNearestRowNumber, getMaxOverlappingItems} from '../utils/itemUtils';
 import {timeSnap, getTimeAtPixel, getSnapPixelFromDelta} from '../utils/timeUtils';
 import Timebar from '../components/timebar';
 import SelectBox from '../components/selector';
@@ -26,11 +21,11 @@ import TimelineBody from '../components/body';
 import 'core-js/fn/string/starts-with';
 
 export default class Timeline extends React.Component {
-  static TIMELINE_MODES = Object.freeze({
+  static TIMELINE_MODES = {
     SELECT: 1,
     DRAG: 2,
     RESIZE: 4
-  });
+  };
 
   static propTypes = {
     setStartDateWithZoom: PropTypes.func.isRequired,
@@ -74,7 +69,7 @@ export default class Timeline extends React.Component {
     forceRedrawFunc: PropTypes.func,
     bottomResolution: PropTypes.string,
     topResolution: PropTypes.string,
-    minItemDuration: PropTypes.number, // in ms
+    minItemDuration: PropTypes.number // in ms
   };
 
   static defaultProps = {
@@ -91,7 +86,7 @@ export default class Timeline extends React.Component {
     timelineMode: Timeline.TIMELINE_MODES.SELECT | Timeline.TIMELINE_MODES.DRAG | Timeline.TIMELINE_MODES.RESIZE,
     shallowUpdateCheck: false,
     forceRedrawFunc: null,
-    minItemDuration: 1, // in ms
+    minItemDuration: 1 // in ms
   };
 
   static changeTypes = {
@@ -397,7 +392,10 @@ export default class Timeline extends React.Component {
               const elementStartInMs = element.start.clone().diff(0, 'ms');
               const elementEndInMs = element.end.clone().diff(0, 'ms');
 
-              if ((newStartInMs > elementStartInMs && newStartInMs < elementEndInMs) || (newEndInMs > elementStartInMs && newEndInMs < elementEndInMs)) {
+              if (
+                (newStartInMs > elementStartInMs && newStartInMs < elementEndInMs) ||
+                (newEndInMs > elementStartInMs && newEndInMs < elementEndInMs)
+              ) {
                 itemAboveElement = true;
                 break;
               }
@@ -470,8 +468,7 @@ export default class Timeline extends React.Component {
             style={style}
             data-row-index={rowIndex}
             className="rct9k-row"
-            onClick={e => this._handleItemRowEvent(e, Timeline.no_op, this.props.onRowClick)}
-          >
+            onClick={e => this._handleItemRowEvent(e, Timeline.no_op, this.props.onRowClick)}>
             {rowItemsRenderer(
               itemsInRow,
               this.props.startDate,
@@ -480,7 +477,7 @@ export default class Timeline extends React.Component {
               this.props.itemHeight,
               this.props.itemRenderer,
               canSelect ? this.props.selectedItems : [],
-              true,
+              true
             )}
             {rowLayerRenderer(layersInRow, this.props.startDate, this.props.endDate, width, rowHeight)}
           </div>
@@ -533,7 +530,7 @@ export default class Timeline extends React.Component {
       shallowUpdateCheck,
       forceRedrawFunc,
       bottomResolution,
-      topResolution,
+      topResolution
     } = this.props;
 
     const divCssClass = `rct9k-timeline-div rct9k-timeline-scroll rct9k-id-${componentId}`;

@@ -34,11 +34,11 @@ import 'core-js/fn/string/starts-with';
 const scrollHeight = 7;
 
 export default class Timeline extends React.Component {
-  static TIMELINE_MODES = Object.freeze({
+  static TIMELINE_MODES = {
     SELECT: 1,
     DRAG: 2,
     RESIZE: 4
-  });
+  };
 
   static propTypes = {
     items: PropTypes.arrayOf(
