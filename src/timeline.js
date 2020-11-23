@@ -34,6 +34,12 @@ import 'core-js/fn/string/starts-with';
 const scrollHeight = 7;
 
 export default class Timeline extends React.Component {
+  static TIMELINE_MODES = Object.freeze({
+    SELECT: 1,
+    DRAG: 2,
+    RESIZE: 4
+  });
+
   static propTypes = {
     items: PropTypes.arrayOf(
       PropTypes.shape({
@@ -172,12 +178,6 @@ export default class Timeline extends React.Component {
 
     window.removeEventListener('resize', this.updateDimensions);
   }
-
-  static TIMELINE_MODES = {
-    SELECT: 1,
-    DRAG: 2,
-    RESIZE: 4
-  };
 
   componentDidUpdate(prevProps, prevState) {
     const {timelineMode, selectedItems} = this.props;
