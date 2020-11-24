@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/strategic-limited/timeline.git"
+    "url": "git+https://github.com/strategic-limited/timeline.git"
   },
   "engines": {
     "node": ">=4.2.4"
