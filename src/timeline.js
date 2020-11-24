@@ -470,8 +470,8 @@ export default class Timeline extends React.Component {
             let newStart = item.start.clone().add(timeDelta, 'ms');
             let newEnd = newStart.clone().add(timelineStartInMs);
             let newRow = item.row + rowChangeDelta >= 0 ? item.row + rowChangeDelta : 0;
-            if (newRow > this.props.layersNumber) {
-              newRow = this.props.layersNumber;
+            if (newRow + 1 > this.props.layersNumber) {
+              newRow = this.props.layersNumber - 1;
             }
 
             const itemsOnNewRow = this.props.items.filter(element => {
