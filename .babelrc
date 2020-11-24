@@ -1,4 +1,4 @@
 {
-  "presets": ["env", "react"],
-  "plugins": ["transform-class-properties", "babel-root-slash-import", "babel-plugin-transform-object-rest-spread"]
+  "presets": ["@babel/preset-env", "@babel/preset-react"],
+  "plugins": ["@babel/plugin-proposal-class-properties", "module:babel-root-slash-import", "@babel/plugin-proposal-object-rest-spread"]
 }
