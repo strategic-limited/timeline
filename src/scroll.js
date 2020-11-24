@@ -4,8 +4,6 @@ import _ from 'lodash';
 import Timeline from './timeline';
 import ScrollBar from './components/scrollBar';
 
-import './style.css';
-
 const groups = [{id: 0}];
 
 const Scroll = ({startDate, endDate, scrollBarStart, scrollBarEnd, setStartDateWithZoom, setEndDateWithZoom}) => {

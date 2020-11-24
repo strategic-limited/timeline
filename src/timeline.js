@@ -13,7 +13,6 @@ import {minElementDuration} from './consts/timebarConsts';
 import {pixToInt, intToPix, sumStyle} from './utils/commonUtils';
 import {
   rowItemsRenderer,
-  scrollItemRenderer,
   rowLayerRenderer,
   getNearestRowNumber,
   getNearestRowObject,
