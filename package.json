@@ -5,7 +5,7 @@
   "private": false,
   "scripts": {
     "build": "webpack --config webpack.prod.js",
-    "build_lib": "babel src --out-dir lib --ignore demo*,setupTests.js,*.test.js --copy-files --source-maps inline",
+    "build_lib": "npx babel src --out-dir lib --ignore demo*,setupTests.js,*.test.js --copy-files --source-maps inline",
     "postinstall": "npm run build_lib",
     "build_demo": "webpack --config webpack.demo.prod.js",
     "start": "webpack-dev-server --open --config webpack.dev.js",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/strategic-limited/timeline.git"
+    "url": "https://github.com/strategic-limited/timeline.git"
   },
   "engines": {
     "node": ">=4.2.4"
