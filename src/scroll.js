@@ -1,18 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
 import _ from 'lodash';
 
 import Timeline from './timeline';
 import ScrollBar from './components/scrollBar';
-import {customItemRenderer, customGroupRenderer} from 'demo/customRenderers';
 
-import 'antd/dist/antd.css';
 import './style.css';
 
 const groups = [{id: 0}];
 
-const Scroll = ({ startDate, endDate, scrollBarStart, scrollBarEnd, setStartDateWithZoom, setEndDateWithZoom }) => {
+const Scroll = ({startDate, endDate, scrollBarStart, scrollBarEnd, setStartDateWithZoom, setEndDateWithZoom}) => {
   const [isStartDrag, setIsStartDrag] = useState(false);
   const [items, setItems] = useState([
     {
