@@ -27,10 +27,6 @@
   },
   "author": "Sergey",
   "license": "MIT",
-  "files": [
-    "dist",
-    "lib"
-  ],
   "main": "lib/index.js",
   "homepage": "https://github.com/strategic-limited/timeline#readme",
   "devDependencies": {
