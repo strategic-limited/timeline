@@ -1111,7 +1111,7 @@ export default class Timeline extends React.Component {
 
     return (
       <Fragment>
-        <div className={divCssClass}>
+        <div className={divCssClass} style={{height: this.props.itemHeight * this.props.layersNumber + 'px'}}>
           <AutoSizer className="rct9k-autosizer" onResize={this.refreshGrid}>
             {({height, width}) => (
               <div className="parent-div" onMouseMove={this.mouseMoveFunc}>
