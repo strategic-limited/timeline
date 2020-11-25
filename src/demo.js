@@ -13,55 +13,55 @@ import './style.css';
 const list = [
   {
     key: 1,
-    title: 1 + " element",
+    title: 1 + ' element',
     color: '#363651',
     row: 0,
-    start: moment('2018-08-01 00:00:00:00'),
-    end: moment('2018-08-01 00:00:05'),
+    start: moment('2018-08-01 00:00:00'),
+    end: moment('2018-08-01 00:00:05')
   },
   {
     key: 2,
-    title: 2 + " element",
+    title: 2 + ' element',
     color: '#363651',
     row: 1,
-    start: moment('2018-08-01 00:00:00:00'),
-    end: moment('2018-08-01 00:00:05'),
+    start: moment('2018-08-01 00:00:00'),
+    end: moment('2018-08-01 00:00:05')
   },
   {
     key: 3,
-    title: 3 + " element",
+    title: 3 + ' element',
     color: '#363651',
     row: 2,
-    start: moment('2018-08-01 00:00:00:00'),
-    end: moment('2018-08-01 00:00:05'),
+    start: moment('2018-08-01 00:00:00'),
+    end: moment('2018-08-01 00:00:05')
   },
   {
     key: 4,
-    title: 4 + " element",
+    title: 4 + ' element',
     color: '#363651',
     row: 3,
-    start: moment('2018-08-01 00:00:00:00'),
-    end: moment('2018-08-01 00:00:05'),
-  },
+    start: moment('2018-08-01 00:00:00'),
+    end: moment('2018-08-01 00:00:05')
+  }
 ];
 
 const groups = [
   {
     id: 0,
-    title: 'Row' + 0,
+    title: 'Row' + 0
   },
   {
     id: 1,
-    title: 'Row' + 1,
+    title: 'Row' + 1
   },
   {
     id: 2,
-    title: 'Row' + 2,
+    title: 'Row' + 2
   },
   {
     id: 3,
-    title: 'Row' + 3,
-  },
+    title: 'Row' + 3
+  }
 ];
 
 const DemoTimeline = () => {
@@ -79,8 +79,8 @@ const DemoTimeline = () => {
 
   // update endDateWithZoom
   useEffect(() => {
-    let newEnd = moment(startDateWithZoom.diff(0) + (endDate.diff(startDate) * zoom));
-    if (!endDateWithZoom || (endDateWithZoom.diff(0) !== newEnd.diff(0))) {
+    let newEnd = moment(startDateWithZoom.diff(0) + endDate.diff(startDate) * zoom);
+    if (!endDateWithZoom || endDateWithZoom.diff(0) !== newEnd.diff(0)) {
       if (endDate.diff(newEnd) <= 0) {
         setStartDateWithZoom(moment(startDateWithZoom.diff(0) - newEnd.diff(endDate)));
         setEndDateWithZoom(endDate);
@@ -210,18 +210,17 @@ const DemoTimeline = () => {
 };
 
 DemoTimeline.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.shape({
-    key: PropTypes.string.isRequired,
-    title: PropTypes.string,
-    row: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]).isRequired,
-    start: PropTypes.shape().isRequired,
-    end: PropTypes.shape().isRequired,
-    minDuration: PropTypes.number, // in ms
-    isResizable: PropTypes.bool,
-  })),
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      row: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      start: PropTypes.shape().isRequired,
+      end: PropTypes.shape().isRequired,
+      minDuration: PropTypes.number, // in ms
+      isResizable: PropTypes.bool
+    })
+  )
 };
 
 export default DemoTimeline;

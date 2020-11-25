@@ -3,7 +3,7 @@
 import React from 'react';
 import _ from 'lodash';
 import moment from 'moment';
-import { minElementDuration } from '../consts/timebarConsts';
+import {minElementDuration} from '../consts/timebarConsts';
 
 /**
  * Render all items in a row
@@ -13,7 +13,16 @@ import { minElementDuration } from '../consts/timebarConsts';
  * @param  {moment} vis_end The visible end of the timeline
  * @param  {number} total_width pixel width of the timeline
  */
-export function rowItemsRenderer(items, vis_start, vis_end, total_width, itemHeight, itemRenderer, selectedItems = [], isScroll = false) {
+export function rowItemsRenderer(
+  items,
+  vis_start,
+  vis_end,
+  total_width,
+  itemHeight,
+  itemRenderer,
+  selectedItems = [],
+  isScroll = false
+) {
   const start_end_min = vis_end.diff(vis_start, 'ms');
   const pixels_per_min = total_width / start_end_min;
   let filtered_items = _.sortBy(
@@ -73,33 +82,6 @@ export function rowItemsRenderer(items, vis_start, vis_end, total_width, itemHei
       </span>
     );
   });
-}
-
-export function scrollItemRenderer(item, vis_start, vis_end, total_width, itemHeight, itemRenderer) {
-  const start_end_min = vis_end.diff(vis_start, 'ms');
-  const pixels_per_min = total_width / start_end_min;
-
-  const {color, isResizable} = item;
-  const Comp = itemRenderer;
-  let top = 0;
-  let item_offset_mins = item.start.diff(vis_start, 'ms');
-  let item_duration_mins = item.end.diff(item.start, 'ms');
-  let left = Math.round(item_offset_mins * pixels_per_min);
-  let width = Math.round(item_duration_mins * pixels_per_min);
-  let compClassnames = 'rct9k-items-inner';
-  let outerClassnames = 'rct9k-item-scroll';
-
-  const resizable = isResizable !== undefined ? isResizable : true;
-
-  return (
-    <span
-      key={item.key}
-      data-item-index={item.key}
-      data-is-resizable={resizable}
-      className={outerClassnames}
-      style={{left, width, top}}>
-      </span>
-  );
 }
 
 /**

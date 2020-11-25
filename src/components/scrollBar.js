@@ -9,7 +9,7 @@ import moment from 'moment';
 import interact from 'interactjs';
 import _ from 'lodash';
 
-import {pixToInt, intToPix, sumStyle} from '../utils/commonUtils';
+import {pixToInt, intToPix} from '../utils/commonUtils';
 import {rowItemsRenderer, rowLayerRenderer, getNearestRowNumber, getMaxOverlappingItems} from '../utils/itemUtils';
 import {timeSnap, getTimeAtPixel, getSnapPixelFromDelta} from '../utils/timeUtils';
 import Timebar from '../components/timebar';
@@ -467,7 +467,7 @@ export default class Timeline extends React.Component {
             key={key}
             style={style}
             data-row-index={rowIndex}
-            className="rct9k-row"
+            className="rct9k-row rct9k-row-scroll"
             onClick={e => this._handleItemRowEvent(e, Timeline.no_op, this.props.onRowClick)}>
             {rowItemsRenderer(
               itemsInRow,
