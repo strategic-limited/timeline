@@ -526,9 +526,16 @@ export default class Timeline extends React.Component {
           // ======================================================================================
           // ======================================================================================
 
-          // Default, all items move by the same offset during a drag
+          const changedItems = [];
+          Object.keys(mewRowsWithNewItems).forEach(i => {
+            mewRowsWithNewItems[i].items.forEach(el => {
+              if (animatedItemsKeys.some(j => j === el.key)) {
+                changedItems.push(el);
+              }
+            });
+          });
 
-          this.props.onInteraction(Timeline.changeTypes.dragEnd, changes, items);
+          this.props.onInteraction(Timeline.changeTypes.dragEnd, changes, changedItems);
 
           // Reset the styles
           animatedItems.forEach(domItem => {
