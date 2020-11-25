@@ -12,7 +12,7 @@ import './style.css';
 
 const list = [
   {
-    key: 1,
+    key: 'asdadsadasdsadsadsadasdasdasdasd',
     title: 1 + ' element',
     color: '#363651',
     row: 0,
@@ -20,7 +20,7 @@ const list = [
     end: moment('2018-08-01 00:00:05')
   },
   {
-    key: 2,
+    key: '2',
     title: 2 + ' element',
     color: '#363651',
     row: 1,
@@ -28,7 +28,7 @@ const list = [
     end: moment('2018-08-01 00:00:05')
   },
   {
-    key: 3,
+    key: '3',
     title: 3 + ' element',
     color: '#363651',
     row: 2,
@@ -36,7 +36,7 @@ const list = [
     end: moment('2018-08-01 00:00:05')
   },
   {
-    key: 4,
+    key: '4',
     title: 4 + ' element',
     color: '#363651',
     row: 3,
@@ -120,10 +120,11 @@ const DemoTimeline = () => {
     let newSelection = selectedItems.slice();
     // If the item is already selected, then unselected
     const idx = selectedItems.indexOf(key);
+
     if (idx > -1) {
       newSelection.splice(idx, 1);
     } else {
-      newSelection.push(Number(key));
+      newSelection.push(key);
     }
     setSelectedItems(newSelection);
   };

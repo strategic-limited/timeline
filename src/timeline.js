@@ -44,7 +44,7 @@ export default class Timeline extends React.Component {
       PropTypes.shape({
         key: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
         title: PropTypes.string,
-        row: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        row: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
         start: PropTypes.object.isRequired,
         end: PropTypes.object.isRequired,
         minDuration: PropTypes.number,
@@ -63,7 +63,7 @@ export default class Timeline extends React.Component {
         style: PropTypes.object.isRequired
       })
     ),
-    selectedItems: PropTypes.arrayOf(PropTypes.number),
+    selectedItems: PropTypes.arrayOf(PropTypes.string),
     startDate: PropTypes.object.isRequired,
     endDate: PropTypes.object.isRequired,
     originalStartDate: PropTypes.object.isRequired,
@@ -358,6 +358,7 @@ export default class Timeline extends React.Component {
           let animatedItems = this._gridDomNode.querySelectorAll("span[isDragging='True'") || [];
 
           let animatedItemsKeys = [];
+
           _.forEach(animatedItems, domItem => {
             animatedItemsKeys.push(this.itemFromElement(domItem).item.key);
           });
@@ -966,7 +967,7 @@ export default class Timeline extends React.Component {
     }
     if (e.target.hasAttribute('data-item-index') || e.target.parentElement.hasAttribute('data-item-index')) {
       let itemKey = e.target.getAttribute('data-item-index') || e.target.parentElement.getAttribute('data-item-index');
-      itemCallback && itemCallback(e, Number(itemKey));
+      itemCallback && itemCallback(e, itemKey);
     } else {
       let row = e.target.getAttribute('data-row-index');
       let clickedTime = getTimeAtPixel(

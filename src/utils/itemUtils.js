@@ -59,7 +59,8 @@ export function rowItemsRenderer(
     let compClassnames = 'rct9k-items-inner';
     let outerClassnames = 'rct9k-items-outer item_draggable';
     let style = {backgroundColor: color};
-    let isSelected = selectedItems.indexOf(Number(i.key)) > -1;
+    let isSelected = selectedItems.indexOf(String(i.key)) > -1;
+
     if (isSelected) {
       compClassnames += ' rct9k-items-selected';
       outerClassnames += ' rct9k-items-outer-selected';
