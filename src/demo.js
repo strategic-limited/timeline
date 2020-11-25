@@ -12,7 +12,7 @@ import './style.css';
 
 const list = [
   {
-    key: 'asdadsadasdsadsadsadasdasdasdasd',
+    key: '1',
     title: 1 + ' element',
     color: '#363651',
     row: 0,
