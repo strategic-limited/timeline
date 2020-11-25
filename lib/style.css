@@ -1,7 +1,7 @@
 .rct9k-timeline-div {
   width: 100%;
   height: 142px;
-  background-color: #1C1C26;
+  background-color: #1c1c26;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -12,6 +12,7 @@
 .rct9k-timeline-scroll {
   height: 10px;
   margin-top: 20px;
+  background: none;
 }
 
 /* Timeline items */
@@ -53,21 +54,21 @@
 }
 .rct9k-row {
   box-sizing: border-box;
-  border: 0.5px solid #4D4D4D;
+  border: 0.5px solid #4d4d4d;
   border-top: 0;
 }
 
 .rct9k-row:first-child {
-  border-top: 0.5px solid #4D4D4D;
+  border-top: 0.5px solid #4d4d4d;
 }
 
 .rct9k-row-scroll {
   box-sizing: border-box;
-  background: #17171C;
+  border: none !important;
 }
 
 .rct9k-items-selected {
-  border-color: #EB5054;
+  border-color: #eb5054;
   background-color: rgb(54, 54, 81);
 }
 
