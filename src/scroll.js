@@ -18,7 +18,7 @@ const Scroll = ({startDate, endDate, scrollBarStart, scrollBarEnd, setStartDateW
       isResizable: false
     }
   ]);
-  const [selectedItems, setSelectedItems] = useState([1]);
+  const [selectedItems, setSelectedItems] = useState(['1']);
 
   useEffect(() => {
     if (!isStartDrag) {
