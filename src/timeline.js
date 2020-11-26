@@ -820,6 +820,7 @@ export default class Timeline extends React.Component {
 
               // check item minimum size
               if (
+                minimumDuration &&
                 newEnd.diff(item.start, 'ms') < minimumDuration &&
                 this.props.endDate.diff(0, 'ms') > newEnd.diff(0, 'ms')
               ) {
@@ -828,6 +829,7 @@ export default class Timeline extends React.Component {
 
               // check item maximum size
               if (
+                maximumDuration &&
                 newEnd.diff(item.start, 'ms') > maximumDuration &&
                 this.props.endDate.diff(0, 'ms') > newEnd.diff(0, 'ms')
               ) {
