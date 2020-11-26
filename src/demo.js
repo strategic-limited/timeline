@@ -192,7 +192,7 @@ const DemoTimeline = () => {
             componentId="timeline-block"
             updateEndDate={setEndDate} // ToDo поменять функцию для изменения end видео ролика
             layersNumber={4} // ToDo здесь должно быть количество слоев на timeline
-            groupOffset={0} // Отступ слева (от timeline до начала окна). Это нужно для правильного multiselect.
+            offsetLeft={0} // Отступ слева (от timeline до начала окна). Это нужно для правильного multiselect.
           />
         </div>
         {isShowScroll && (

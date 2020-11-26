@@ -55,6 +55,7 @@ export default class Timeline extends React.Component {
     layersNumber: PropTypes.number.isRequired,
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
     groupOffset: PropTypes.number,
+    offsetLeft: PropTypes.number,
     rowLayers: PropTypes.arrayOf(
       PropTypes.shape({
         start: PropTypes.object.isRequired,
@@ -104,6 +105,7 @@ export default class Timeline extends React.Component {
     ).isRequired,
     rowLayers: [],
     groupOffset: 0,
+    offsetLeft: 0,
     itemHeight: 40,
     snapMinutes: 0.01,
     cursorTimeFormat: 'mm:ss:ms',
@@ -960,7 +962,7 @@ export default class Timeline extends React.Component {
             );
 
             //Get the start and end time of the selection rectangle
-            left = left - this.props.groupOffset;
+            left = left - this.props.offsetLeft;
             let startOffset = width > 0 ? left : left + width;
             let endOffset = width > 0 ? left + width : left;
             const startTime = getTimeAtPixel(
