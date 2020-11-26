@@ -488,9 +488,18 @@ export default class Timeline extends React.Component {
               mewRowsWithNewItems[newRow] = {items: [...itemsOnNewRow]};
             }
             if (newEnd.diff(0) !== item.end.diff(0)) {
-              item.start = newStart;
-              item.end = newEnd;
-              item.row = newRow;
+              if (item.start.diff(0) !== newStart.diff(0)) {
+                item.start = newStart;
+                item.isUpdatedStartEnd = true;
+              }
+              if (item.end.diff(0) !== newEnd.diff(0)) {
+                item.end = newEnd;
+                item.isUpdatedStartEnd = true;
+              }
+              if (item.row !== newRow) {
+                item.row = newRow;
+                item.isUpdatedRow = true;
+              }
               mewRowsWithNewItems[newRow].items.push(item);
             }
           });
