@@ -866,6 +866,7 @@ export default class Timeline extends React.Component {
             domItem.style['z-index'] = 3;
             domItem.style.webkitTransform = domItem.style.transform = 'translate(0px, 0px)';
 
+            item.isUpdatedStartEnd = true;
             items.push(item);
           });
           if (durationChange === null) durationChange = 0;
