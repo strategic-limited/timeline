@@ -509,6 +509,8 @@ export default class Timeline extends React.Component {
               mewRowsWithNewItems[el].items.sort((a, b) => a.start.diff(0) - b.start.diff(0));
             });
 
+            let itemEndMoreEndDate = null;
+
             Object.keys(mewRowsWithNewItems).forEach((el, i) => {
               mewRowsWithNewItems[el].items.forEach((element, k) => {
                 const elDuration = element.end.diff(element.start);
@@ -525,10 +527,18 @@ export default class Timeline extends React.Component {
                   items.push(element);
                 }
                 if (element.end.diff(0) > this.props.originalEndDate) {
-                  this.props.updateEndDate(element.end);
+                  if (!itemEndMoreEndDate) {
+                    itemEndMoreEndDate = element.end;
+                  } else if (element.end.diff(0) > itemEndMoreEndDate.diff(0)) {
+                    itemEndMoreEndDate = element.end;
+                  }
                 }
               });
             });
+
+            if (itemEndMoreEndDate) {
+              this.props.updateEndDate(itemEndMoreEndDate);
+            }
           }
 
           // ======================================================================================
@@ -936,6 +946,7 @@ export default class Timeline extends React.Component {
           let {top, left, width, height} = this._selectBox.end();
           //Get the start and end row of the selection rectangle
           const topRowObject = getNearestRowObject(left, top);
+
           if (topRowObject !== undefined) {
             // only confirm the end of a drag if the selection box is valid
             const topRowNumber = Number(getNearestRowNumber(left, top));
@@ -947,6 +958,7 @@ export default class Timeline extends React.Component {
                 Math.floor(topRowLoc.top - rowMarginBorder) + Math.floor(height - rowMarginBorder)
               )
             );
+
             //Get the start and end time of the selection rectangle
             left = left - this.props.groupOffset;
             let startOffset = width > 0 ? left : left + width;
@@ -965,6 +977,7 @@ export default class Timeline extends React.Component {
               this.getTimelineWidth(),
               this.props.snapMinutes
             );
+
             //Get items in these ranges
             let selectedItems = [];
             for (let r = Math.min(topRowNumber, bottomRow); r <= Math.max(topRowNumber, bottomRow); r++) {
