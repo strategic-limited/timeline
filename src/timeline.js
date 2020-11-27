@@ -1066,7 +1066,7 @@ export default class Timeline extends React.Component {
               this.props.itemRenderer,
               canSelect ? this.props.selectedItems : [],
               false,
-              (e, key) => this.props.onInteraction(Timeline.changeTypes.oneItemSelected, {e, key})
+              (e, item) => this.props.onInteraction(Timeline.changeTypes.oneItemSelected, {e, item})
             )}
             {rowLayerRenderer(layersInRow, this.props.startDate, this.props.endDate, width, rowHeight)}
           </div>

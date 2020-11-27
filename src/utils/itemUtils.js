@@ -77,7 +77,7 @@ export function rowItemsRenderer(
         data-is-resizable={resizable}
         className={outerClassnames}
         style={{left, width, top}}>
-        {!isScroll && <Comp key={i.key} item={i} className={compClassnames} onClick={e => onClick(e, i.key)} />}
+        {!isScroll && <Comp key={i.key} item={i} className={compClassnames} onClick={e => onClick(e, i)} />}
       </span>
     );
   });

@@ -147,7 +147,7 @@ const DemoTimeline = () => {
         changes.e.stopPropagation();
         let newSelection = selectedItems.slice();
         // If the item is already selected, then unselected
-        const idx = selectedItems.indexOf(changes.key);
+        const idx = selectedItems.indexOf(changes.item.key);
 
         if (idx > -1) {
           newSelection.splice(idx, 1);
