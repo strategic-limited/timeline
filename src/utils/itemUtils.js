@@ -21,7 +21,8 @@ export function rowItemsRenderer(
   itemHeight,
   itemRenderer,
   selectedItems = [],
-  isScroll = false
+  isScroll = false,
+  onClick
 ) {
   const start_end_min = vis_end.diff(vis_start, 'ms');
   const pixels_per_min = total_width / start_end_min;
@@ -58,7 +59,6 @@ export function rowItemsRenderer(
     let width = Math.round(item_duration_mins * pixels_per_min);
     let compClassnames = 'rct9k-items-inner';
     let outerClassnames = 'rct9k-items-outer item_draggable';
-    let style = {backgroundColor: color};
     let isSelected = selectedItems.indexOf(String(i.key)) > -1;
 
     if (isSelected) {
@@ -67,11 +67,9 @@ export function rowItemsRenderer(
       if (isScroll) {
         outerClassnames += ' rct9k-items-outer-scroll';
       }
-      style = {};
     }
 
     const resizable = isResizable !== undefined ? isResizable : true;
-
     return (
       <span
         key={i.key}
@@ -79,7 +77,7 @@ export function rowItemsRenderer(
         data-is-resizable={resizable}
         className={outerClassnames}
         style={{left, width, top}}>
-        {!isScroll && <Comp key={i.key} item={i} className={compClassnames} style={style} />}
+        {!isScroll && <Comp key={i.key} item={i} className={compClassnames} onClick={e => onClick(e, i.key)} />}
       </span>
     );
   });

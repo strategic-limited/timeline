@@ -128,7 +128,8 @@ export default class Timeline extends React.Component {
     dragEnd: 'dragEnd',
     dragStart: 'dragStart',
     itemsSelected: 'itemsSelected',
-    snappedMouseMove: 'snappedMouseMove'
+    snappedMouseMove: 'snappedMouseMove',
+    oneItemSelected: 'oneItemSelected'
   };
 
   static isBitSet(bit, mask) {
@@ -279,7 +280,7 @@ export default class Timeline extends React.Component {
     this._selectRectangleInteractable = interact(`.${topDivClassId} .parent-div`);
 
     this._itemInteractable.on('tap', e => {
-      this._handleItemRowEvent(e, this.props.onItemClick, this.props.onRowClick);
+      this._handleItemRowEvent(e);
     });
 
     if (canDrag) {
@@ -1037,7 +1038,7 @@ export default class Timeline extends React.Component {
             style={style}
             data-row-index={rowIndex}
             className="rct9k-row"
-            onClick={e => this._handleItemRowEvent(e, Timeline.no_op, this.props.onRowClick)}
+            onClick={this.props.onRowClick}
             onMouseDown={e => (this.selecting = false)}
             onMouseMove={e => (this.selecting = true)}
             onMouseOver={e => {
@@ -1059,7 +1060,9 @@ export default class Timeline extends React.Component {
               width,
               this.props.itemHeight,
               this.props.itemRenderer,
-              canSelect ? this.props.selectedItems : []
+              canSelect ? this.props.selectedItems : [],
+              false,
+              (e, key) => this.props.onInteraction(Timeline.changeTypes.oneItemSelected, {e, key})
             )}
             {rowLayerRenderer(layersInRow, this.props.startDate, this.props.endDate, width, rowHeight)}
           </div>

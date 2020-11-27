@@ -14,7 +14,6 @@ const list = [
   {
     key: '1',
     title: 1 + ' element',
-    color: '#363651',
     row: 0,
     start: moment('2018-08-01 00:00:00'),
     end: moment('2018-08-01 00:00:05')
@@ -22,7 +21,6 @@ const list = [
   {
     key: '2',
     title: 2 + ' element',
-    color: '#363651',
     row: 1,
     start: moment('2018-08-01 00:00:00'),
     end: moment('2018-08-01 00:00:05')
@@ -30,7 +28,6 @@ const list = [
   {
     key: '3',
     title: 3 + ' element',
-    color: '#363651',
     row: 2,
     start: moment('2018-08-01 00:00:00'),
     end: moment('2018-08-01 00:00:05')
@@ -38,7 +35,6 @@ const list = [
   {
     key: '4',
     title: 4 + ' element',
-    color: '#363651',
     row: 3,
     start: moment('2018-08-01 00:00:00'),
     end: moment('2018-08-01 00:00:05')
@@ -116,18 +112,19 @@ const DemoTimeline = () => {
     setZoom(1);
   };
 
-  const handleItemClick = (e, key) => {
-    let newSelection = selectedItems.slice();
-    // If the item is already selected, then unselected
-    const idx = selectedItems.indexOf(key);
-
-    if (idx > -1) {
-      newSelection.splice(idx, 1);
-    } else {
-      newSelection.push(key);
-    }
-    setSelectedItems(newSelection);
-  };
+  // const handleItemClick = (e, key) => {
+  //   e.stopPropagation();
+  //   let newSelection = selectedItems.slice();
+  //   // If the item is already selected, then unselected
+  //   const idx = selectedItems.indexOf(key);
+  //
+  //   if (idx > -1) {
+  //     newSelection.splice(idx, 1);
+  //   } else {
+  //     newSelection.push(key);
+  //   }
+  //   setSelectedItems(newSelection);
+  // };
 
   const handleRowClick = () => {
     setSelectedItems([]);
@@ -146,6 +143,20 @@ const DemoTimeline = () => {
     };
 
     switch (type) {
+      case Timeline.changeTypes.oneItemSelected: {
+        changes.e.stopPropagation();
+        let newSelection = selectedItems.slice();
+        // If the item is already selected, then unselected
+        const idx = selectedItems.indexOf(changes.key);
+
+        if (idx > -1) {
+          newSelection.splice(idx, 1);
+        } else {
+          newSelection.push(changes.key);
+        }
+        setSelectedItems(newSelection);
+        break;
+      }
       case Timeline.changeTypes.dragStart:
       case Timeline.changeTypes.resizeStart: {
         return selectedItems;
@@ -155,6 +166,12 @@ const DemoTimeline = () => {
         const newItems = _.clone(items);
 
         absorbChange(newItems, elements);
+
+        const returnSelectedItems = [];
+        elements.forEach(item => {
+          returnSelectedItems.push(item.key);
+        });
+        setSelectedItems([...selectedItems, ...returnSelectedItems]);
         // ToDo исправить под нужды проекта
         setItems(newItems);
         break;
@@ -184,7 +201,7 @@ const DemoTimeline = () => {
             originalStartDate={startDate}
             originalEndDate={endDate}
             selectedItems={selectedItems}
-            onItemClick={handleItemClick}
+            // onItemClick={handleItemClick}
             showCursorTime
             itemHeight={35}
             onInteraction={handleInteraction}
