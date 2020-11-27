@@ -557,7 +557,7 @@ export default class Timeline extends React.Component {
             });
           });
 
-          this.props.onInteraction(Timeline.changeTypes.dragEnd, changes, changedItems);
+          this.props.onInteraction(Timeline.changeTypes.dragEnd, changes, [...changedItems, ...items]);
 
           // Reset the styles
           animatedItems.forEach(domItem => {
