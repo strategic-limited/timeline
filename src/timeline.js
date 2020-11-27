@@ -521,7 +521,9 @@ export default class Timeline extends React.Component {
                   element.start = this.props.originalStartDate;
                   element.end = this.props.originalStartDate.clone().add(elDuration);
                   element.isUpdatedStartEnd = true;
-                  element.notSelected = true;
+                  if (animatedItemsKeys.some(j => j !== element.key)) {
+                    element.notSelected = true;
+                  }
                   items.push(element);
                 } else if (
                   mewRowsWithNewItems[el].items[k - 1] &&
@@ -530,7 +532,9 @@ export default class Timeline extends React.Component {
                   element.start = mewRowsWithNewItems[el].items[k - 1].end;
                   element.end = mewRowsWithNewItems[el].items[k - 1].end.clone().add(elDuration);
                   element.isUpdatedStartEnd = true;
-                  element.notSelected = true;
+                  if (animatedItemsKeys.some(j => j !== element.key)) {
+                    element.notSelected = true;
+                  }
                   items.push(element);
                 }
                 if (element.end.diff(0) > this.props.originalEndDate) {
