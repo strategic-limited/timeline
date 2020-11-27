@@ -50,7 +50,7 @@ export function rowItemsRenderer(
   }
   return _.map(displayItems, i => {
     const {color, isResizable} = i;
-    const Comp = i.itemRenderer || itemRenderer;
+    const Comp = i.render || itemRenderer;
     // let top = itemHeight * i['rowOffset'];
     let top = 0;
     let item_offset_mins = i.start.diff(vis_start, 'ms');
