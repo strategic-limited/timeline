@@ -152,7 +152,7 @@ const DemoTimeline = () => {
         if (idx > -1) {
           newSelection.splice(idx, 1);
         } else {
-          newSelection.push(changes.key);
+          newSelection.push(changes.item.key);
         }
         setSelectedItems(newSelection);
         break;
