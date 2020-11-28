@@ -559,7 +559,7 @@ export default class Timeline extends React.Component {
           const changedItems = [];
           Object.keys(mewRowsWithNewItems).forEach(i => {
             mewRowsWithNewItems[i].items.forEach(el => {
-              if (animatedItemsKeys.some(j => j === el.key)) {
+              if (animatedItemsKeys.some(j => j === el.key) && !items.some(j => j.key === el.key)) {
                 changedItems.push(el);
               }
             });
