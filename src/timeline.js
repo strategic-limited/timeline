@@ -64,7 +64,7 @@ export default class Timeline extends React.Component {
         style: PropTypes.object.isRequired
       })
     ),
-    selectedItems: PropTypes.arrayOf(PropTypes.string),
+    selectedItems: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
     startDate: PropTypes.object.isRequired,
     endDate: PropTypes.object.isRequired,
     originalStartDate: PropTypes.object.isRequired,
