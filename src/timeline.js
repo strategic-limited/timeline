@@ -79,7 +79,7 @@ export default class Timeline extends React.Component {
     onItemClick: PropTypes.func,
     onItemDoubleClick: PropTypes.func,
     onItemContext: PropTypes.func,
-    onInteraction: PropTypes.func,
+    onInteraction: PropTypes.func.isRequired,
     onRowClick: PropTypes.func,
     onRowContext: PropTypes.func,
     onRowDoubleClick: PropTypes.func,
@@ -93,7 +93,7 @@ export default class Timeline extends React.Component {
     bottomResolution: PropTypes.string,
     topResolution: PropTypes.string,
     minItemDuration: PropTypes.number, // in ms
-    updateEndDate: PropTypes.func
+    updateEndDate: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -283,7 +283,7 @@ export default class Timeline extends React.Component {
       this._handleItemRowEvent(e);
     });
 
-    if (canDrag && this.props.onInteraction) {
+    if (canDrag) {
       this._itemInteractable
         .draggable({
           enabled: true,
@@ -582,7 +582,7 @@ export default class Timeline extends React.Component {
           this._grid.recomputeGridSize({rowIndex: 0});
         });
     }
-    if (canResize && this.props.onInteraction) {
+    if (canResize) {
       this._itemInteractable
         .resizable({
           allowFrom: selectedItemSelector,
@@ -1070,12 +1070,7 @@ export default class Timeline extends React.Component {
               this.props.itemRenderer,
               canSelect ? this.props.selectedItems : [],
               false,
-              (e, item) => {
-                if (!this.props.onInteraction) {
-                  return;
-                }
-                this.props.onInteraction(Timeline.changeTypes.oneItemSelected, {e, item});
-              }
+              (e, item) => this.props.onInteraction(Timeline.changeTypes.oneItemSelected, {e, item})
             )}
             {rowLayerRenderer(layersInRow, this.props.startDate, this.props.endDate, width, rowHeight)}
           </div>
@@ -1113,13 +1108,11 @@ export default class Timeline extends React.Component {
       if (cursorSnappedTime.isSameOrAfter(this.props.startDate)) {
         this.mouse_snapped_time = cursorSnappedTime;
         this.setState({cursorTime: this.mouse_snapped_time});
-        if (this.props.onInteraction) {
-          this.props.onInteraction(
-            Timeline.changeTypes.snappedMouseMove,
-            {snappedTime: this.mouse_snapped_time.clone()},
-            null
-          );
-        }
+        this.props.onInteraction(
+          Timeline.changeTypes.snappedMouseMove,
+          {snappedTime: this.mouse_snapped_time.clone()},
+          null
+        );
       }
     }
   }
