@@ -134,7 +134,7 @@ export default class Timeline extends React.Component {
     window.addEventListener('resize', this.updateDimensions);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.setTimeMap(nextProps.items, nextProps.startDate, nextProps.endDate);
     this.refreshGrid();
   }
