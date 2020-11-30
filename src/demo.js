@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import Timeline from './timeline';
 import Scroll from './scroll';
+import LineDuration from './lineDuration';
 import {customItemRenderer, customGroupRenderer} from 'demo/customRenderers';
 
 import 'antd/dist/antd.css';
@@ -222,6 +223,12 @@ const DemoTimeline = () => {
             setEndDateWithZoom={setEndDateWithZoom}
           />
         )}
+        <LineDuration
+          startDate={startDateWithZoom}
+          endDate={endDateWithZoom}
+          originalStartDate={startDate}
+          originalEndDate={endDate}
+        />
       </Fragment>
     );
   }
