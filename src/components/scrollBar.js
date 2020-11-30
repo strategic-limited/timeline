@@ -41,7 +41,7 @@ export default class Timeline extends React.Component {
         style: PropTypes.object.isRequired
       })
     ),
-    selectedItems: PropTypes.arrayOf(PropTypes.number),
+    selectedItems: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
     startDate: PropTypes.object.isRequired,
     endDate: PropTypes.object.isRequired,
     originalStartDate: PropTypes.object.isRequired,
@@ -134,7 +134,7 @@ export default class Timeline extends React.Component {
     window.addEventListener('resize', this.updateDimensions);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setTimeMap(nextProps.items, nextProps.startDate, nextProps.endDate);
     this.refreshGrid();
   }
