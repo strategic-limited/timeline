@@ -22,7 +22,8 @@ export function rowItemsRenderer(
   itemRenderer,
   selectedItems = [],
   isScroll = false,
-  onClick
+  onClick,
+  activeElementId
 ) {
   const start_end_min = vis_end.diff(vis_start, 'ms');
   const pixels_per_min = total_width / start_end_min;
@@ -67,6 +68,10 @@ export function rowItemsRenderer(
       if (isScroll) {
         outerClassnames += ' rct9k-items-outer-scroll';
       }
+    }
+
+    if (i.key === activeElementId) {
+      outerClassnames += ' rct9k-active-item';
     }
 
     const resizable = isResizable !== undefined ? isResizable : true;
