@@ -71,7 +71,7 @@ export function rowItemsRenderer(
     }
 
     if (i.key === activeElementId) {
-      outerClassnames += ' rct9k-active-item';
+      compClassnames += ' rct9k-active-item';
     }
 
     const resizable = isResizable !== undefined ? isResizable : true;
