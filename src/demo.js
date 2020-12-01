@@ -5,7 +5,6 @@ import _ from 'lodash';
 
 import Timeline from './timeline';
 import Scroll from './scroll';
-import {customItemRenderer, customGroupRenderer} from 'demo/customRenderers';
 
 import 'antd/dist/antd.css';
 import './style.css';
