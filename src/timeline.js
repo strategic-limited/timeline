@@ -93,7 +93,7 @@ export default class Timeline extends React.Component {
     bottomResolution: PropTypes.string,
     topResolution: PropTypes.string,
     minItemDuration: PropTypes.number, // in ms
-    updateEndDate: PropTypes.func.isRequired
+    updateEndDate: PropTypes.func
   };
 
   static defaultProps = {
