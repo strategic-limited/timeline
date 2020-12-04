@@ -31,6 +31,7 @@
 .rct9k-items-outer-scroll {
   border-radius: 5px;
   background: #575773;
+  transition: 0.3s all;
 }
 
 .rct9k-items-inner {

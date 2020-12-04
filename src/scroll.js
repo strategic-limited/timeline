@@ -50,11 +50,13 @@ const Scroll = ({startDate, endDate, scrollBarStart, scrollBarEnd, setStartDateW
     switch (type) {
       case Timeline.changeTypes.dragStart:
       case Timeline.changeTypes.resizeStart: {
+        document.querySelector('.rct9k-items-outer-scroll').style.transition = 'none';
         setIsStartDrag(true);
         return selectedItems;
       }
       case Timeline.changeTypes.dragEnd:
       case Timeline.changeTypes.resizeEnd: {
+        document.querySelector('.rct9k-items-outer-scroll').style.transition = '0.3s all';
         const newItems = _.clone(items);
 
         absorbChange(newItems, elements);
