@@ -6,7 +6,15 @@ import ScrollBar from './components/scrollBar';
 
 const groups = [{id: 0}];
 
-const Scroll = ({startDate, endDate, scrollBarStart, scrollBarEnd, setStartDateWithZoom, setEndDateWithZoom}) => {
+const Scroll = ({
+  startDate,
+  endDate,
+  scrollBarStart,
+  scrollBarEnd,
+  setStartDateWithZoom,
+  setEndDateWithZoom,
+  scrollEffect
+}) => {
   const [isStartDrag, setIsStartDrag] = useState(false);
   const [items, setItems] = useState([
     {
@@ -50,6 +58,9 @@ const Scroll = ({startDate, endDate, scrollBarStart, scrollBarEnd, setStartDateW
     switch (type) {
       case Timeline.changeTypes.dragStart:
       case Timeline.changeTypes.resizeStart: {
+        if (scrollEffect) {
+          scrollEffect();
+        }
         document.querySelector('.rct9k-items-outer-scroll').style.transition = 'none';
         setIsStartDrag(true);
         return selectedItems;

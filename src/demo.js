@@ -219,6 +219,7 @@ const DemoTimeline = () => {
             scrollBarEnd={endDateWithZoom}
             setStartDateWithZoom={setStartDateWithZoom}
             setEndDateWithZoom={setEndDateWithZoom}
+            scrollEffect={() => console.log('Scroll move')}
           />
         )}
       </Fragment>
