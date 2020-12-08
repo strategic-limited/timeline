@@ -1018,9 +1018,16 @@ export default class Timeline extends React.Component {
       this.getTimelineWidth()
     );
 
-    if (e.target.hasAttribute('data-item-index') || e.target.parentElement.hasAttribute('data-item-index')) {
-      let itemKey = e.target.getAttribute('data-item-index') || e.target.parentElement.getAttribute('data-item-index');
-      itemCallback && itemCallback(e, itemKey, clickedTime);
+    const parentNode = e.target.closest('.rct9k-items-outer');
+    let itemIndex = null;
+    if (e.target.hasAttribute('data-item-index')) {
+      itemIndex = e.target.getAttribute('data-item-index');
+    } else if (parentNode) {
+      itemIndex = parentNode.getAttribute('data-item-index');
+    }
+
+    if (itemIndex) {
+      itemCallback && itemCallback(e, itemIndex, clickedTime);
     } else {
       let row = e.target.getAttribute('data-row-index');
 

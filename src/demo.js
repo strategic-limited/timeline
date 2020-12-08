@@ -209,7 +209,7 @@ const DemoTimeline = () => {
             updateEndDate={setEndDate} // ToDo поменять функцию для изменения end видео ролика
             layersNumber={4} // ToDo здесь должно быть количество слоев на timeline
             offsetLeft={0} // Отступ слева (от timeline до начала окна). Это нужно для правильного multiselect.
-            onItemContextClick={(e, key, currentTime) => console.log('Item', currentTime)}
+            onItemContextClick={(e, key, currentTime) => console.log('Item', key)}
             onRowContextClick={(e, row, currentTime) => console.log('Row', currentTime)}
           />
         </div>
