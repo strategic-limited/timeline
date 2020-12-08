@@ -1011,17 +1011,18 @@ export default class Timeline extends React.Component {
     if (this.selecting) {
       return;
     }
+    let clickedTime = getTimeAtPixel(
+      e.clientX - this.props.groupOffset,
+      this.props.startDate,
+      this.props.endDate,
+      this.getTimelineWidth()
+    );
+
     if (e.target.hasAttribute('data-item-index') || e.target.parentElement.hasAttribute('data-item-index')) {
       let itemKey = e.target.getAttribute('data-item-index') || e.target.parentElement.getAttribute('data-item-index');
-      itemCallback && itemCallback(e, itemKey);
+      itemCallback && itemCallback(e, itemKey, clickedTime);
     } else {
       let row = e.target.getAttribute('data-row-index');
-      let clickedTime = getTimeAtPixel(
-        e.clientX - this.props.groupOffset,
-        this.props.startDate,
-        this.props.endDate,
-        this.getTimelineWidth()
-      );
 
       //const roundedStartMinutes = Math.round(clickedTime.minute() / this.props.snapMinutes) * this.props.snapMinutes; // I dont know what this does
       let snappedClickedTime = timeSnap(clickedTime, this.props.snapMinutes);
