@@ -1056,13 +1056,15 @@ export default class Timeline extends React.Component {
             data-row-index={rowIndex}
             className="rct9k-row"
             onClick={e => {
-              let clickedTime = getTimeAtPixel(
-                e.clientX - this.props.groupOffset,
-                this.props.startDate,
-                this.props.endDate,
-                this.getTimelineWidth()
-              );
-              this.props.onRowClick(e, rowIndex, clickedTime);
+              if (this.props.onRowClick) {
+                const clickedTime = getTimeAtPixel(
+                  e.clientX - this.props.groupOffset,
+                  this.props.startDate,
+                  this.props.endDate,
+                  this.getTimelineWidth()
+                );
+                this.props.onRowClick(e, rowIndex, clickedTime);
+              }
             }}
             onMouseDown={e => (this.selecting = false)}
             onMouseMove={e => (this.selecting = true)}
