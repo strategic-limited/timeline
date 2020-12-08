@@ -1015,7 +1015,7 @@ export default class Timeline extends React.Component {
       e.clientX - this.props.groupOffset,
       this.props.startDate,
       this.props.endDate,
-      this.getTimelineWidth()
+      this._grid.props.width
     );
 
     const parentNode = e.target.closest('.rct9k-items-outer');
@@ -1061,7 +1061,7 @@ export default class Timeline extends React.Component {
                   e.clientX - this.props.groupOffset,
                   this.props.startDate,
                   this.props.endDate,
-                  this.getTimelineWidth()
+                  this._grid.props.width
                 );
                 this.props.onRowClick(e, rowIndex, clickedTime);
               }

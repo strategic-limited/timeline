@@ -210,7 +210,7 @@ const DemoTimeline = () => {
             layersNumber={4} // ToDo здесь должно быть количество слоев на timeline
             offsetLeft={0} // Отступ слева (от timeline до начала окна). Это нужно для правильного multiselect.
             onItemContextClick={(e, key, currentTime) => console.log('Item', key)}
-            onRowContextClick={(e, row, currentTime) => console.log('Row', currentTime)}
+            onRowContextClick={(e, row, currentTime) => console.log('Row', currentTime.diff(startDate))}
           />
         </div>
         {isShowScroll && (
