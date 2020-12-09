@@ -74,7 +74,8 @@ export default class Timeline extends React.Component {
     showCursorTime: PropTypes.bool,
     cursorTimeFormat: PropTypes.string,
     componentId: PropTypes.string, // A unique key to identify the component. Only needed when 2 grids are mounted
-    itemHeight: PropTypes.number,
+    itemHeight: PropTypes.number.isRequired,
+    multiselectMaxRow: PropTypes.number.isRequired,
     timelineMode: PropTypes.number,
     timebarFormat: PropTypes.object,
     onItemClick: PropTypes.func,
@@ -935,11 +936,17 @@ export default class Timeline extends React.Component {
             // const numRows = 1 + Math.abs(startRowNumber - currentRowNumber);
             const rowMarginBorder = getVerticalMarginBorder(currentRowObject);
             if (startRowNumber <= currentRowNumber) {
+              const timeline = document.querySelector('.rct9k-timeline-div');
+              const timelinePosTop = timeline.offsetTop;
+              const maxHeight = timelinePosTop + this.props.multiselectMaxRow * this.props.itemHeight;
               // select box for selection going down
               // get the first selected rows top
               const startTop = Math.ceil(startRowObject.getBoundingClientRect().top + rowMarginBorder);
               // get the currently selected rows bottom
-              const currentBottom = Math.floor(getTrueBottom(currentRowObject) - magicalConstant - rowMarginBorder);
+              let currentBottom = Math.floor(getTrueBottom(currentRowObject) - magicalConstant - rowMarginBorder);
+              if (currentBottom > maxHeight) {
+                currentBottom = maxHeight;
+              }
               this._selectBox.start(startX, startTop);
               this._selectBox.move(clientX, currentBottom);
             } else {

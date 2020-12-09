@@ -203,6 +203,7 @@ const DemoTimeline = () => {
             // onItemClick={handleItemClick}
             showCursorTime
             itemHeight={35}
+            multiselectMaxRow={4}
             onInteraction={handleInteraction}
             onRowClick={handleRowClick}
             componentId="timeline-block"
