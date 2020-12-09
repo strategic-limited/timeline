@@ -1019,7 +1019,7 @@ export default class Timeline extends React.Component {
       return;
     }
     let clickedTime = getTimeAtPixel(
-      e.clientX - this.props.groupOffset,
+      e.clientX - this.props.offsetLeft,
       this.props.startDate,
       this.props.endDate,
       this._grid.props.width
@@ -1065,7 +1065,7 @@ export default class Timeline extends React.Component {
             onClick={e => {
               if (this.props.onRowClick) {
                 const clickedTime = getTimeAtPixel(
-                  e.clientX - this.props.groupOffset,
+                  e.clientX - this.props.offsetLeft,
                   this.props.startDate,
                   this.props.endDate,
                   this._grid.props.width
