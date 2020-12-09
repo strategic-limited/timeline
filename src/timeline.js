@@ -936,7 +936,7 @@ export default class Timeline extends React.Component {
             // const numRows = 1 + Math.abs(startRowNumber - currentRowNumber);
             const rowMarginBorder = getVerticalMarginBorder(currentRowObject);
             if (startRowNumber <= currentRowNumber) {
-              const timeline = document.querySelector('.rct9k-timeline-div');
+              const timeline = document.querySelector('.rct9k-id-timeline-block');
               const timelinePosTop = timeline.offsetTop;
               const maxHeight = timelinePosTop + this.props.multiselectMaxRow * this.props.itemHeight;
               // select box for selection going down
