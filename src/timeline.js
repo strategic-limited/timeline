@@ -395,73 +395,73 @@ export default class Timeline extends React.Component {
 
           // Check - whether the clamped element is being dragged to a new layer and it is located above another element.
           // ===========================================================================================================
-          const itemsOnNewRowForTarget = this.props.items.filter(element => element.row === +newRow);
-          let targetDuration = item.end.diff(item.start);
-          let targetNewEnd = newStart.clone().add(targetDuration);
-          const newTargetStartInMs = newStart.clone().diff(0, 'ms');
-          const newTargetEndInMs = targetNewEnd.clone().diff(0, 'ms');
-          let targetAboveElement = false;
-
-          itemsOnNewRowForTarget.sort((a, b) => {
-            return a - b;
-          });
-
-          // Checking whether the dragged item is above other items.
-          if (rowNo !== +newRow) {
-            for (let i = 0; i < itemsOnNewRowForTarget.length; i++) {
-              const element = itemsOnNewRowForTarget[i];
-              if (animatedItemsKeys.some(key => key === element.key)) {
-                continue;
-              }
-              const elementStartInMs = element.start.clone().diff(0, 'ms');
-              const elementEndInMs = element.end.clone().diff(0, 'ms');
-
-              if (
-                (newTargetStartInMs > elementStartInMs && newTargetStartInMs < elementEndInMs) ||
-                (newTargetEndInMs > elementStartInMs && newTargetEndInMs < elementEndInMs)
-              ) {
-                targetAboveElement = true;
-                break;
-              }
-            }
-          }
+          // const itemsOnNewRowForTarget = this.props.items.filter(element => element.row === +newRow);
+          // let targetDuration = item.end.diff(item.start);
+          // let targetNewEnd = newStart.clone().add(targetDuration);
+          // const newTargetStartInMs = newStart.clone().diff(0, 'ms');
+          // const newTargetEndInMs = targetNewEnd.clone().diff(0, 'ms');
+          // let targetAboveElement = false;
+          //
+          // itemsOnNewRowForTarget.sort((a, b) => {
+          //   return a - b;
+          // });
+          //
+          // // Checking whether the dragged item is above other items.
+          // if (rowNo !== +newRow) {
+          //   for (let i = 0; i < itemsOnNewRowForTarget.length; i++) {
+          //     const element = itemsOnNewRowForTarget[i];
+          //     if (animatedItemsKeys.some(key => key === element.key)) {
+          //       continue;
+          //     }
+          //     const elementStartInMs = element.start.clone().diff(0, 'ms');
+          //     const elementEndInMs = element.end.clone().diff(0, 'ms');
+          //
+          //     if (
+          //       (newTargetStartInMs > elementStartInMs && newTargetStartInMs < elementEndInMs) ||
+          //       (newTargetEndInMs > elementStartInMs && newTargetEndInMs < elementEndInMs)
+          //     ) {
+          //       targetAboveElement = true;
+          //       break;
+          //     }
+          //   }
+          // }
           // ===========================================================================================================
           // end Check - whether the clamped element is being dragged to a new layer and it is located above another element.
 
           // Checking. Whether one of the dragged array elements is over an element on a new layer.
           // ======================================================================================
-          let oneOfItemAboveElement = false;
-          _.forEach(animatedItems, domItem => {
-            const {item} = this.itemFromElement(domItem);
-            let itemDuration = item.end.diff(item.start);
-            let newStart = item.start.clone().add(timeDelta, 'ms');
-            let newEnd = newStart.clone().add(itemDuration);
-            const newStartInMs = newStart.clone().diff(0, 'ms');
-            const newEndInMs = newEnd.clone().diff(0, 'ms');
-            const currentItemNewRow = item.row + rowChangeDelta;
-
-            const itemsOnNewRow = this.props.items.filter(element => element.row === currentItemNewRow);
-            itemsOnNewRow.sort((a, b) => {
-              return a - b;
-            });
-
-            for (let i = 0; i < itemsOnNewRow.length; i++) {
-              const element = itemsOnNewRow[i];
-              if (animatedItemsKeys.some(key => key === element.key)) {
-                continue;
-              }
-              const elementStartInMs = element.start.clone().diff(0, 'ms');
-              const elementEndInMs = element.end.clone().diff(0, 'ms');
-
-              if (
-                (newStartInMs > elementStartInMs && newStartInMs < elementEndInMs) ||
-                (newEndInMs > elementStartInMs && newEndInMs < elementEndInMs)
-              ) {
-                oneOfItemAboveElement = true;
-                break;
-              }
-            }
-          });
+          // let oneOfItemAboveElement = false;
+          // _.forEach(animatedItems, domItem => {
+          //   const {item} = this.itemFromElement(domItem);
+          //   let itemDuration = item.end.diff(item.start);
+          //   let newStart = item.start.clone().add(timeDelta, 'ms');
+          //   let newEnd = newStart.clone().add(itemDuration);
+          //   const newStartInMs = newStart.clone().diff(0, 'ms');
+          //   const newEndInMs = newEnd.clone().diff(0, 'ms');
+          //   const currentItemNewRow = item.row + rowChangeDelta;
+          //
+          //   const itemsOnNewRow = this.props.items.filter(element => element.row === currentItemNewRow);
+          //   itemsOnNewRow.sort((a, b) => {
+          //     return a - b;
+          //   });
+          //
+          //   for (let i = 0; i < itemsOnNewRow.length; i++) {
+          //     const element = itemsOnNewRow[i];
+          //     if (animatedItemsKeys.some(key => key === element.key)) {
+          //       continue;
+          //     }
+          //     const elementStartInMs = element.start.clone().diff(0, 'ms');
+          //     const elementEndInMs = element.end.clone().diff(0, 'ms');
+          //
+          //     if (
+          //       (newStartInMs > elementStartInMs && newStartInMs < elementEndInMs) ||
+          //       (newEndInMs > elementStartInMs && newEndInMs < elementEndInMs)
+          //     ) {
+          //       oneOfItemAboveElement = true;
+          //       break;
+          //     }
+          //   }
+          // });
           // ======================================================================================
           // Checking. Whether one of the dragged array elements is over an element on a new layer.
 
