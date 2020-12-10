@@ -74,8 +74,8 @@ export default class Timeline extends React.Component {
     showCursorTime: PropTypes.bool,
     cursorTimeFormat: PropTypes.string,
     componentId: PropTypes.string, // A unique key to identify the component. Only needed when 2 grids are mounted
-    itemHeight: PropTypes.number.isRequired,
-    multiselectMaxRow: PropTypes.number.isRequired,
+    itemHeight: PropTypes.number,
+    multiselectMaxRow: PropTypes.number,
     timelineMode: PropTypes.number,
     timebarFormat: PropTypes.object,
     onItemClick: PropTypes.func,
