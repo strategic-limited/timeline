@@ -37,6 +37,20 @@ const list = [
     row: 3,
     start: moment('2018-08-01 00:00:00'),
     end: moment('2018-08-01 00:00:05')
+  },
+  {
+    key: '5',
+    title: 5 + ' element',
+    row: 4,
+    start: moment('2018-08-01 00:00:00'),
+    end: moment('2018-08-01 00:00:05')
+  },
+  {
+    key: '6',
+    title: 6 + ' element',
+    row: 5,
+    start: moment('2018-08-01 00:00:00'),
+    end: moment('2018-08-01 00:00:05')
   }
 ];
 
@@ -56,6 +70,14 @@ const groups = [
   {
     id: 3,
     title: 'Row' + 3
+  },
+  {
+    id: 4,
+    title: 'Row' + 4
+  },
+  {
+    id: 5,
+    title: 'Row' + 5
   }
 ];
 

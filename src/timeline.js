@@ -8,6 +8,7 @@ import {AutoSizer} from 'react-virtualized';
 import moment from 'moment';
 import interact from 'interactjs';
 import _ from 'lodash';
+import Selecto from 'react-selecto';
 
 import {minElementDuration} from './consts/timebarConsts';
 import {pixToInt, intToPix, sumStyle} from './utils/commonUtils';
@@ -160,6 +161,7 @@ export default class Timeline extends React.Component {
     this.select_ref_callback = this.select_ref_callback.bind(this);
     this.throttledMouseMoveFunc = _.throttle(this.throttledMouseMoveFunc.bind(this), 20);
     this.mouseMoveFunc = this.mouseMoveFunc.bind(this);
+    this.onSelectEnd = this.onSelectEnd.bind(this);
 
     const canSelect = Timeline.isBitSet(Timeline.TIMELINE_MODES.SELECT, this.props.timelineMode);
     const canDrag = Timeline.isBitSet(Timeline.TIMELINE_MODES.DRAG, this.props.timelineMode);
@@ -906,110 +908,110 @@ export default class Timeline extends React.Component {
         });
     }
 
-    if (canSelect) {
-      this._selectRectangleInteractable
-        .draggable({
-          enabled: true,
-          ignoreFrom: '.item_draggable, .rct9k-group'
-        })
-        .styleCursor(false)
-        .on('dragstart', e => {
-          const nearestRowObject = getNearestRowObject(e.clientX, e.clientY);
-
-          // this._selectBox.start(e.clientX, e.clientY);
-          // this._selectBox.start(e.clientX, topRowObj.style.top);
-          this._selectBox.start(e.clientX, nearestRowObject.getBoundingClientRect().y);
-          // const bottomRow = Number(getNearestRowNumber(left + width, top + height));
-        })
-        .on('dragmove', e => {
-          const magicalConstant = 2;
-          // I added this magical constant to solve the issue of selection bleed,
-          // I don't understand why it works, but if frequentist statisticians can use imaginary numbers, so can i.
-          const {startX, startY} = this._selectBox;
-          const startRowObject = getNearestRowObject(startX, startY);
-          const {clientX, clientY} = e;
-          const currentRowObject = getNearestRowObject(clientX, clientY);
-          if (currentRowObject !== undefined && startRowObject !== undefined) {
-            // only run if you can detect the top row
-            const startRowNumber = getRowObjectRowNumber(startRowObject);
-            const currentRowNumber = getRowObjectRowNumber(currentRowObject);
-            // const numRows = 1 + Math.abs(startRowNumber - currentRowNumber);
-            const rowMarginBorder = getVerticalMarginBorder(currentRowObject);
-            if (startRowNumber <= currentRowNumber) {
-              const timeline = document.querySelector('.rct9k-id-timeline-block');
-              const timelinePosTop = timeline.getBoundingClientRect().top;
-              const maxHeight = timelinePosTop - magicalConstant + this.props.multiselectMaxRow * this.props.itemHeight;
-              // select box for selection going down
-              // get the first selected rows top
-              const startTop = Math.ceil(startRowObject.getBoundingClientRect().top + rowMarginBorder);
-              // get the currently selected rows bottom
-              let currentBottom = Math.floor(getTrueBottom(currentRowObject) - magicalConstant - rowMarginBorder);
-              if (currentBottom > maxHeight) {
-                currentBottom = maxHeight;
-              }
-              this._selectBox.start(startX, startTop);
-              this._selectBox.move(clientX, currentBottom);
-            } else {
-              // select box for selection going up
-              // get the currently selected rows top
-              const currentTop = Math.ceil(currentRowObject.getBoundingClientRect().top + rowMarginBorder);
-              // get the first selected rows bottom
-              const startBottom = Math.floor(getTrueBottom(startRowObject) - magicalConstant - rowMarginBorder * 2);
-              // the bottom will bleed south unless you counter the margins and boreders from the above rows
-              this._selectBox.start(startX, startBottom);
-              this._selectBox.move(clientX, currentTop);
-            }
-          }
-        })
-        .on('dragend', e => {
-          let {top, left, width, height} = this._selectBox.end();
-          //Get the start and end row of the selection rectangle
-          const topRowObject = getNearestRowObject(left, top);
-
-          if (topRowObject !== undefined) {
-            // only confirm the end of a drag if the selection box is valid
-            const topRowNumber = Number(getNearestRowNumber(left, top));
-            const topRowLoc = topRowObject.getBoundingClientRect();
-            const rowMarginBorder = getVerticalMarginBorder(topRowObject);
-            const bottomRow = Number(
-              getNearestRowNumber(
-                left + width,
-                Math.floor(topRowLoc.top - rowMarginBorder) + Math.floor(height - rowMarginBorder)
-              )
-            );
-
-            //Get the start and end time of the selection rectangle
-            left = left - this.props.offsetLeft;
-            let startOffset = width > 0 ? left : left + width;
-            let endOffset = width > 0 ? left + width : left;
-            const startTime = getTimeAtPixel(
-              startOffset,
-              this.props.startDate,
-              this.props.endDate,
-              this.getTimelineWidth(),
-              this.props.snapMinutes
-            );
-            const endTime = getTimeAtPixel(
-              endOffset,
-              this.props.startDate,
-              this.props.endDate,
-              this.getTimelineWidth(),
-              this.props.snapMinutes
-            );
-
-            //Get items in these ranges
-            let selectedItems = [];
-            for (let r = Math.min(topRowNumber, bottomRow); r <= Math.max(topRowNumber, bottomRow); r++) {
-              selectedItems.push(
-                ..._.filter(this.rowItemMap[r], i => {
-                  return i.start.isBefore(endTime) && i.end.isAfter(startTime);
-                })
-              );
-            }
-            this.props.onInteraction(Timeline.changeTypes.itemsSelected, selectedItems);
-          }
-        });
-    }
+    // if (canSelect) {
+    //   this._selectRectangleInteractable
+    //     .draggable({
+    //       enabled: true,
+    //       ignoreFrom: '.item_draggable, .rct9k-group'
+    //     })
+    //     .styleCursor(false)
+    //     .on('dragstart', e => {
+    //       const nearestRowObject = getNearestRowObject(e.clientX, e.clientY);
+    //
+    //       // this._selectBox.start(e.clientX, e.clientY);
+    //       // this._selectBox.start(e.clientX, topRowObj.style.top);
+    //       this._selectBox.start(e.clientX, nearestRowObject.getBoundingClientRect().y);
+    //       // const bottomRow = Number(getNearestRowNumber(left + width, top + height));
+    //     })
+    //     .on('dragmove', e => {
+    //       const magicalConstant = 2;
+    //       // I added this magical constant to solve the issue of selection bleed,
+    //       // I don't understand why it works, but if frequentist statisticians can use imaginary numbers, so can i.
+    //       const {startX, startY} = this._selectBox;
+    //       const {clientX, clientY} = e;
+    //       const startRowObject = getNearestRowObject(startX, startY);
+    //       const currentRowObject = getNearestRowObject(clientX, clientY);
+    //       if (currentRowObject !== undefined && startRowObject !== undefined) {
+    //         // only run if you can detect the top row
+    //         const startRowNumber = getRowObjectRowNumber(startRowObject);
+    //         const currentRowNumber = getRowObjectRowNumber(currentRowObject);
+    //         // const numRows = 1 + Math.abs(startRowNumber - currentRowNumber);
+    //         const rowMarginBorder = getVerticalMarginBorder(currentRowObject);
+    //         if (startRowNumber <= currentRowNumber) {
+    //           const timeline = document.querySelector('.rct9k-id-timeline-block');
+    //           const timelinePosTop = timeline.getBoundingClientRect().top;
+    //           const maxHeight = timelinePosTop - magicalConstant + this.props.multiselectMaxRow * this.props.itemHeight;
+    //           // select box for selection going down
+    //           // get the first selected rows top
+    //           const startTop = Math.ceil(startRowObject.getBoundingClientRect().top + rowMarginBorder);
+    //           // get the currently selected rows bottom
+    //           let currentBottom = Math.floor(getTrueBottom(currentRowObject) - magicalConstant - rowMarginBorder);
+    //           if (currentBottom > maxHeight) {
+    //             currentBottom = maxHeight;
+    //           }
+    //           this._selectBox.start(startX, startTop);
+    //           this._selectBox.move(clientX, currentBottom);
+    //         } else {
+    //           // select box for selection going up
+    //           // get the currently selected rows top
+    //           const currentTop = Math.ceil(currentRowObject.getBoundingClientRect().top + rowMarginBorder);
+    //           // get the first selected rows bottom
+    //           const startBottom = Math.floor(getTrueBottom(startRowObject) - magicalConstant - rowMarginBorder * 2);
+    //           // the bottom will bleed south unless you counter the margins and boreders from the above rows
+    //           this._selectBox.start(startX, startBottom);
+    //           this._selectBox.move(clientX, currentTop);
+    //         }
+    //       }
+    //     })
+    //     .on('dragend', e => {
+    //       let {top, left, width, height} = this._selectBox.end();
+    //       //Get the start and end row of the selection rectangle
+    //       const topRowObject = getNearestRowObject(left, top);
+    //
+    //       if (topRowObject !== undefined) {
+    //         // only confirm the end of a drag if the selection box is valid
+    //         const topRowNumber = Number(getNearestRowNumber(left, top));
+    //         const topRowLoc = topRowObject.getBoundingClientRect();
+    //         const rowMarginBorder = getVerticalMarginBorder(topRowObject);
+    //         const bottomRow = Number(
+    //           getNearestRowNumber(
+    //             left + width,
+    //             Math.floor(topRowLoc.top - rowMarginBorder) + Math.floor(height - rowMarginBorder)
+    //           )
+    //         );
+    //
+    //         //Get the start and end time of the selection rectangle
+    //         left = left - this.props.offsetLeft;
+    //         let startOffset = width > 0 ? left : left + width;
+    //         let endOffset = width > 0 ? left + width : left;
+    //         const startTime = getTimeAtPixel(
+    //           startOffset,
+    //           this.props.startDate,
+    //           this.props.endDate,
+    //           this.getTimelineWidth(),
+    //           this.props.snapMinutes
+    //         );
+    //         const endTime = getTimeAtPixel(
+    //           endOffset,
+    //           this.props.startDate,
+    //           this.props.endDate,
+    //           this.getTimelineWidth(),
+    //           this.props.snapMinutes
+    //         );
+    //
+    //         //Get items in these ranges
+    //         let selectedItems = [];
+    //         for (let r = Math.min(topRowNumber, bottomRow); r <= Math.max(topRowNumber, bottomRow); r++) {
+    //           selectedItems.push(
+    //             ..._.filter(this.rowItemMap[r], i => {
+    //               return i.start.isBefore(endTime) && i.end.isAfter(startTime);
+    //             })
+    //           );
+    //         }
+    //         this.props.onInteraction(Timeline.changeTypes.itemsSelected, selectedItems);
+    //       }
+    //     });
+    // }
   }
 
   _handleItemRowEvent = (e, itemCallback, rowCallback) => {
@@ -1149,6 +1151,17 @@ export default class Timeline extends React.Component {
     this.throttledMouseMoveFunc(e);
   }
 
+  onSelectEnd(e) {
+    const selectedItems = [];
+    e.selected.forEach(el => {
+      if (el.hasAttribute('data-item-index')) {
+        const elFormArray = this.props.items.find(item => item.key === el.getAttribute('data-item-index'));
+        selectedItems.push(elFormArray);
+      }
+    });
+    return this.props.onInteraction(Timeline.changeTypes.itemsSelected, selectedItems);
+  }
+
   render() {
     const {
       timebarFormat,
@@ -1189,7 +1202,7 @@ export default class Timeline extends React.Component {
           <AutoSizer className="rct9k-autosizer" onResize={this.refreshGrid}>
             {({height, width}) => (
               <div className="parent-div" onMouseMove={this.mouseMoveFunc}>
-                <SelectBox ref={this.select_ref_callback} />
+                {/*<SelectBox ref={this.select_ref_callback} />*/}
                 <Timebar start={this.props.startDate} end={this.props.endDate} width={width} {...varTimebarProps} />
                 <TimelineBody
                   width={width}
@@ -1205,6 +1218,36 @@ export default class Timeline extends React.Component {
               </div>
             )}
           </AutoSizer>
+          <Selecto
+            container={document.querySelector('.rct9k-id-timeline-block')}
+            selectableTargets={['.rct9k-items-outer']}
+            selectByClick={false}
+            continueSelect={false}
+            selectFromInside={false}
+            toggleContinueSelect={'shift'}
+            keyContainer={document.querySelector('.rct9k-id-timeline-block')}
+            hitRate={0}
+            ratio={0}
+            scrollOptions={{
+              container: document.querySelector('.rct9k-id-timeline-block .ReactVirtualized__Grid'),
+              throttleTime: 30,
+              threshold: 0
+            }}
+            onSelect={e => {
+              e.added.forEach(el => {
+                el.querySelector('.rct9k-items-inner').classList.add('rct9k-items-selected');
+              });
+              e.removed.forEach(el => {
+                el.querySelector('.rct9k-items-inner').classList.remove('rct9k-items-selected');
+              });
+            }}
+            onSelectEnd={this.onSelectEnd}
+            onScroll={e => {
+              document
+                .querySelector('.rct9k-id-timeline-block .ReactVirtualized__Grid')
+                .scrollBy(e.direction[0] * 10, e.direction[1] * 10);
+            }}
+          />
         </div>
       </Fragment>
     );
