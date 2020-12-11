@@ -53,6 +53,7 @@ export default class Timeline extends React.Component {
         isResizable: PropTypes.bool
       })
     ).isRequired,
+    withDragSelection: PropTypes.bool,
     activeElementId: PropTypes.string,
     layersNumber: PropTypes.number.isRequired,
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -107,6 +108,7 @@ export default class Timeline extends React.Component {
         isResizable: true
       })
     ).isRequired,
+    withDragSelection: true,
     rowLayers: [],
     groupOffset: 0,
     offsetLeft: 0,
@@ -1222,34 +1224,36 @@ export default class Timeline extends React.Component {
               </div>
             )}
           </AutoSizer>
-          <Selecto
-            container={document.querySelector('.rct9k-id-timeline-block')}
-            selectableTargets={['.rct9k-id-timeline-block .rct9k-items-outer']}
-            selectByClick={false}
-            continueSelect={false}
-            selectFromInside={false}
-            toggleContinueSelect={'shift'}
-            keyContainer={document.querySelector('.rct9k-id-timeline-block')}
-            hitRate={0}
-            ratio={0}
-            scrollOptions={{
-              container: blockForScrolling,
-              throttleTime: 30,
-              threshold: 0
-            }}
-            onSelect={e => {
-              e.added.forEach(el => {
-                el.querySelector('.rct9k-items-inner').classList.add('rct9k-items-selected');
-              });
-              e.removed.forEach(el => {
-                el.querySelector('.rct9k-items-inner').classList.remove('rct9k-items-selected');
-              });
-            }}
-            onSelectEnd={this.onSelectEnd}
-            onScroll={e => {
-              blockForScrolling.scrollBy(e.direction[0] * 10, e.direction[1] * 10);
-            }}
-          />
+          {this.props.withDragSelection && (
+            <Selecto
+              container={document.querySelector('.rct9k-id-timeline-block')}
+              selectableTargets={['.rct9k-id-timeline-block .rct9k-items-outer']}
+              selectByClick={false}
+              continueSelect={false}
+              selectFromInside={false}
+              toggleContinueSelect={'shift'}
+              keyContainer={document.querySelector('.rct9k-id-timeline-block')}
+              hitRate={0}
+              ratio={0}
+              scrollOptions={{
+                container: blockForScrolling,
+                throttleTime: 30,
+                threshold: 0
+              }}
+              onSelect={e => {
+                e.added.forEach(el => {
+                  el.querySelector('.rct9k-items-inner').classList.add('rct9k-items-selected');
+                });
+                e.removed.forEach(el => {
+                  el.querySelector('.rct9k-items-inner').classList.remove('rct9k-items-selected');
+                });
+              }}
+              onSelectEnd={this.onSelectEnd}
+              onScroll={e => {
+                blockForScrolling.scrollBy(e.direction[0] * 10, e.direction[1] * 10);
+              }}
+            />
+          )}
         </div>
       </Fragment>
     );
