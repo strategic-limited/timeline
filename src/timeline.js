@@ -77,6 +77,7 @@ export default class Timeline extends React.Component {
     componentId: PropTypes.string, // A unique key to identify the component. Only needed when 2 grids are mounted
     itemHeight: PropTypes.number,
     multiselectMaxRow: PropTypes.number,
+    scrollBlock: PropTypes.any,
     timelineMode: PropTypes.number,
     timebarFormat: PropTypes.object,
     onItemClick: PropTypes.func,
@@ -1196,6 +1197,9 @@ export default class Timeline extends React.Component {
       return Math.max(height - timebarHeight, 0);
     }
 
+    const blockForScrolling =
+      this.props.scrollBlock || document.querySelector('.rct9k-id-timeline-block .ReactVirtualized__Grid');
+
     return (
       <Fragment>
         <div className={divCssClass} style={{height: this.props.itemHeight * this.props.layersNumber + 'px'}}>
@@ -1220,7 +1224,7 @@ export default class Timeline extends React.Component {
           </AutoSizer>
           <Selecto
             container={document.querySelector('.rct9k-id-timeline-block')}
-            selectableTargets={['.rct9k-items-outer']}
+            selectableTargets={['.rct9k-id-timeline-block .rct9k-items-outer']}
             selectByClick={false}
             continueSelect={false}
             selectFromInside={false}
@@ -1229,7 +1233,7 @@ export default class Timeline extends React.Component {
             hitRate={0}
             ratio={0}
             scrollOptions={{
-              container: document.querySelector('.rct9k-id-timeline-block .ReactVirtualized__Grid'),
+              container: blockForScrolling,
               throttleTime: 30,
               threshold: 0
             }}
@@ -1243,9 +1247,7 @@ export default class Timeline extends React.Component {
             }}
             onSelectEnd={this.onSelectEnd}
             onScroll={e => {
-              document
-                .querySelector('.rct9k-id-timeline-block .ReactVirtualized__Grid')
-                .scrollBy(e.direction[0] * 10, e.direction[1] * 10);
+              blockForScrolling.scrollBy(e.direction[0] * 10, e.direction[1] * 10);
             }}
           />
         </div>
