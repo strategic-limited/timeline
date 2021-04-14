@@ -1101,7 +1101,19 @@ export default class Timeline extends React.Component {
               this.props.itemRenderer,
               canSelect ? this.props.selectedItems : [],
               false,
-              (e, item) => this.props.onInteraction(Timeline.changeTypes.oneItemSelected, {e, item}),
+              (e, item) => {
+                this.props.onInteraction(Timeline.changeTypes.oneItemSelected, {e, item});
+                this.props.onItemClick(
+                  e,
+                  item,
+                  getTimeAtPixel(
+                    e.clientX - this.props.offsetLeft,
+                    this.props.startDate,
+                    this.props.endDate,
+                    this._grid.props.width
+                  )
+                );
+              },
               this.props.activeElementId
             )}
             {rowLayerRenderer(layersInRow, this.props.startDate, this.props.endDate, width, rowHeight)}
