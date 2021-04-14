@@ -1102,17 +1102,16 @@ export default class Timeline extends React.Component {
               canSelect ? this.props.selectedItems : [],
               false,
               (e, item) => {
-                this.props.onInteraction(Timeline.changeTypes.oneItemSelected, {e, item});
-                this.props.onItemClick(
+                this.props.onInteraction(Timeline.changeTypes.oneItemSelected, {
                   e,
                   item,
-                  getTimeAtPixel(
+                  currentTime: getTimeAtPixel(
                     e.clientX - this.props.offsetLeft,
                     this.props.startDate,
                     this.props.endDate,
                     this._grid.props.width
                   )
-                );
+                });
               },
               this.props.activeElementId
             )}

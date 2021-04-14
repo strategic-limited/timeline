@@ -133,11 +133,6 @@ const DemoTimeline = () => {
     setZoom(1);
   };
 
-  const handleItemClick = (e, key, currentTime) => {
-    e.stopPropagation();
-    console.log(e, key, currentTime);
-  };
-
   const handleRowClick = () => {
     setSelectedItems([]);
   };
@@ -213,7 +208,7 @@ const DemoTimeline = () => {
             originalStartDate={startDate}
             originalEndDate={endDate}
             selectedItems={selectedItems}
-            onItemClick={handleItemClick}
+            // onItemClick={handleItemClick}
             showCursorTime
             itemHeight={35}
             multiselectMaxRow={4}
