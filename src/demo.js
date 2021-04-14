@@ -133,20 +133,6 @@ const DemoTimeline = () => {
     setZoom(1);
   };
 
-  // const handleItemClick = (e, key) => {
-  //   e.stopPropagation();
-  //   let newSelection = selectedItems.slice();
-  //   // If the item is already selected, then unselected
-  //   const idx = selectedItems.indexOf(key);
-  //
-  //   if (idx > -1) {
-  //     newSelection.splice(idx, 1);
-  //   } else {
-  //     newSelection.push(key);
-  //   }
-  //   setSelectedItems(newSelection);
-  // };
-
   const handleRowClick = () => {
     setSelectedItems([]);
   };
