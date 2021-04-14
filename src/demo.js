@@ -133,19 +133,10 @@ const DemoTimeline = () => {
     setZoom(1);
   };
 
-  // const handleItemClick = (e, key) => {
-  //   e.stopPropagation();
-  //   let newSelection = selectedItems.slice();
-  //   // If the item is already selected, then unselected
-  //   const idx = selectedItems.indexOf(key);
-  //
-  //   if (idx > -1) {
-  //     newSelection.splice(idx, 1);
-  //   } else {
-  //     newSelection.push(key);
-  //   }
-  //   setSelectedItems(newSelection);
-  // };
+  const handleItemClick = (e, key, currentTime) => {
+    e.stopPropagation();
+    console.log(e, key, currentTime);
+  };
 
   const handleRowClick = () => {
     setSelectedItems([]);
@@ -222,7 +213,7 @@ const DemoTimeline = () => {
             originalStartDate={startDate}
             originalEndDate={endDate}
             selectedItems={selectedItems}
-            // onItemClick={handleItemClick}
+            onItemClick={handleItemClick}
             showCursorTime
             itemHeight={35}
             multiselectMaxRow={4}
